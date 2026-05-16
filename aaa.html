@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Finans — Para Yönetimi</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        fontFamily: {
+          syne: ['Syne', 'sans-serif'],
+          mono: ['DM Mono', 'monospace'],
+        },
+        colors: {
+          ink: {
+            950: '#080c14',
+            900: '#0d1220',
+            800: '#141b2d',
+            700: '#1c2640',
+            600: '#253050',
+          },
+          slate: {
+            border: '#1e2d4a',
+          },
+          accent: {
+            blue: '#3b82f6',
+            green: '#10b981',
+            red: '#f43f5e',
+            amber: '#f59e0b',
+          }
+        }
+      }
+    }
+  }
+</script>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Syne', sans-serif;
+    background: #080c14;
+    color: #e2e8f0;
+    min-height: 100vh;
+  }
+
+  /* Subtle grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(59,130,246,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59,130,246,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .glass {
+    background: rgba(13,18,32,0.8);
+    border: 1px solid rgba(59,130,246,0.12);
+    backdrop-filter: blur(12px);
+  }
+
+  .glass-light {
+    background: rgba(20,27,45,0.6);
+    border: 1px solid rgba(59,130,246,0.08);
+  }
+
+  .card-glow:hover {
+    border-color: rgba(59,130,246,0.3);
+    box-shadow: 0 0 24px rgba(59,130,246,0.08);
+    transition: all 0.3s ease;
+  }
+
+  input, select, textarea {
+    background: rgba(20,27,45,0.8) !important;
+    border: 1px solid rgba(59,130,246,0.15) !important;
+    color: #e2e8f0 !important;
+    font-family: 'Syne', sans-serif;
+    transition: border-color 0.2s;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none !important;
+    border-color: rgba(59,130,246,0.5) !important;
+    box-shadow: 0 0 0 2px rgba(59,130,246,0.1) !important;
+  }
+  input::placeholder, textarea::placeholder {
+    color: #4a5568 !important;
+  }
+  select option {
+    background: #141b2d;
+    color: #e2e8f0;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    border: 1px solid rgba(59,130,246,0.4);
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    transition: all 0.2s;
+  }
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+    box-shadow: 0 4px 20px rgba(59,130,246,0.35);
+    transform: translateY(-1px);
+  }
+  .btn-danger {
+    background: rgba(244,63,94,0.12);
+    border: 1px solid rgba(244,63,94,0.25);
+    color: #f43f5e;
+    transition: all 0.2s;
+  }
+  .btn-danger:hover {
+    background: rgba(244,63,94,0.22);
+    border-color: rgba(244,63,94,0.5);
+  }
+
+  .amount-positive { color: #10b981; }
+  .amount-negative { color: #f43f5e; }
+
+  .tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  .tag-gelir {
+    background: rgba(16,185,129,0.12);
+    border: 1px solid rgba(16,185,129,0.25);
+    color: #10b981;
+  }
+  .tag-gider {
+    background: rgba(244,63,94,0.12);
+    border: 1px solid rgba(244,63,94,0.25);
+    color: #f43f5e;
+  }
+
+  .filter-btn {
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid rgba(59,130,246,0.15);
+    background: transparent;
+    color: #94a3b8;
+    transition: all 0.2s;
+    font-family: 'Syne', sans-serif;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    background: rgba(59,130,246,0.15);
+    border-color: rgba(59,130,246,0.4);
+    color: #93c5fd;
+  }
+
+  .transaction-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    gap: 12px;
+    align-items: center;
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(59,130,246,0.06);
+    transition: background 0.15s;
+  }
+  .transaction-row:hover {
+    background: rgba(59,130,246,0.04);
+  }
+  .transaction-row:last-child {
+    border-bottom: none;
+  }
+
+  .stat-card {
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card::after {
+    content: '';
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    opacity: 0.06;
+  }
+  .stat-bakiye::after { background: #3b82f6; }
+  .stat-gelir::after { background: #10b981; }
+  .stat-gider::after { background: #f43f5e; }
+
+  .scroll-area {
+    max-height: 480px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(59,130,246,0.2) transparent;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    z-index: 9999;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
+    pointer-events: none;
+  }
+  .toast.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  .toast-success {
+    background: rgba(16,185,129,0.15);
+    border: 1px solid rgba(16,185,129,0.4);
+    color: #10b981;
+  }
+  .toast-error {
+    background: rgba(244,63,94,0.15);
+    border: 1px solid rgba(244,63,94,0.4);
+    color: #f43f5e;
+  }
+  .toast-info {
+    background: rgba(59,130,246,0.15);
+    border: 1px solid rgba(59,130,246,0.4);
+    color: #93c5fd;
+  }
+
+  @media (max-width: 640px) {
+    .transaction-row {
+      grid-template-columns: 1fr auto;
+      grid-template-rows: auto auto;
+    }
+  }
+</style>
+</head>
+<body class="relative">
+
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
+
+<!-- WRAPPER -->
+<div class="relative z-10 max-w-4xl mx-auto px-4 py-8 sm:px-6">
+
+  <!-- HEADER -->
+  <div class="mb-10 flex items-end justify-between">
+    <div>
+      <p class="text-xs font-mono tracking-widest text-blue-500 uppercase mb-1">Para Yönetimi</p>
+      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-white">Finans</h1>
+    </div>
+    <div class="flex gap-2">
+      <button onclick="exportData()" class="filter-btn flex items-center gap-1.5" title="JSON olarak yedekle">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+        Yedekle
+      </button>
+      <label class="filter-btn flex items-center gap-1.5 cursor-pointer" title="JSON yükle">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l4-4m0 0l4 4m-4-4v12"/></svg>
+        Yükle
+        <input type="file" accept=".json" id="importFile" class="hidden" onchange="importData(event)" />
+      </label>
+    </div>
+  </div>
+
+  <!-- STAT CARDS -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+    <div class="glass rounded-2xl p-5 stat-card stat-bakiye card-glow">
+      <p class="text-xs font-mono text-blue-400 tracking-widest uppercase mb-2">Toplam Bakiye</p>
+      <p id="stat-bakiye" class="text-3xl font-bold text-white tracking-tight">₺0,00</p>
+      <div class="mt-3 h-0.5 w-12 rounded-full bg-blue-500 opacity-50"></div>
+    </div>
+    <div class="glass rounded-2xl p-5 stat-card stat-gelir card-glow">
+      <p class="text-xs font-mono text-emerald-400 tracking-widest uppercase mb-2">Toplam Gelir</p>
+      <p id="stat-gelir" class="text-3xl font-bold amount-positive tracking-tight">₺0,00</p>
+      <div class="mt-3 h-0.5 w-12 rounded-full bg-emerald-500 opacity-50"></div>
+    </div>
+    <div class="glass rounded-2xl p-5 stat-card stat-gider card-glow">
+      <p class="text-xs font-mono text-rose-400 tracking-widest uppercase mb-2">Toplam Gider</p>
+      <p id="stat-gider" class="text-3xl font-bold amount-negative tracking-tight">₺0,00</p>
+      <div class="mt-3 h-0.5 w-12 rounded-full bg-rose-500 opacity-50"></div>
+    </div>
+  </div>
+
+  <!-- MAIN GRID -->
+  <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+
+    <!-- FORM -->
+    <div class="lg:col-span-2">
+      <div class="glass rounded-2xl p-6">
+        <h2 class="text-sm font-mono tracking-widest text-blue-400 uppercase mb-5">Yeni İşlem</h2>
+
+        <!-- Tür -->
+        <div class="flex gap-2 mb-4">
+          <button id="btn-gelir" onclick="setType('gelir')"
+            class="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all duration-200
+                   bg-emerald-500/10 border border-emerald-500/20 text-emerald-400
+                   hover:bg-emerald-500/20 active-type-gelir">
+            ↑ Gelir
+          </button>
+          <button id="btn-gider" onclick="setType('gider')"
+            class="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all duration-200
+                   border border-white/5 text-slate-500
+                   hover:bg-rose-500/10 hover:border-rose-500/20 hover:text-rose-400">
+            ↓ Gider
+          </button>
+        </div>
+
+        <!-- Miktar -->
+        <div class="mb-3">
+          <label class="block text-xs text-slate-500 font-mono mb-1.5 tracking-wider">MİKTAR (₺)</label>
+          <input id="f-miktar" type="number" min="0" step="0.01" placeholder="0.00"
+            class="w-full rounded-xl px-4 py-2.5 text-lg font-bold font-mono" />
+        </div>
+
+        <!-- Kategori -->
+        <div class="mb-3">
+          <label class="block text-xs text-slate-500 font-mono mb-1.5 tracking-wider">KATEGORİ</label>
+          <select id="f-kategori" class="w-full rounded-xl px-4 py-2.5 text-sm">
+            <option value="Gıda">🍽 Gıda</option>
+            <option value="Fatura">💡 Fatura</option>
+            <option value="Maaş">💼 Maaş</option>
+            <option value="Eğlence">🎮 Eğlence</option>
+            <option value="Ulaşım">🚌 Ulaşım</option>
+            <option value="Sağlık">🏥 Sağlık</option>
+            <option value="Alışveriş">🛍 Alışveriş</option>
+            <option value="Kira">🏠 Kira</option>
+            <option value="Eğitim">📚 Eğitim</option>
+            <option value="Diğer">📦 Diğer</option>
+          </select>
+        </div>
+
+        <!-- Tarih -->
+        <div class="mb-3">
+          <label class="block text-xs text-slate-500 font-mono mb-1.5 tracking-wider">TARİH</label>
+          <input id="f-tarih" type="date" class="w-full rounded-xl px-4 py-2.5 text-sm" />
+        </div>
+
+        <!-- Açıklama -->
+        <div class="mb-5">
+          <label class="block text-xs text-slate-500 font-mono mb-1.5 tracking-wider">AÇIKLAMA</label>
+          <input id="f-aciklama" type="text" placeholder="İsteğe bağlı not..." class="w-full rounded-xl px-4 py-2.5 text-sm" />
+        </div>
+
+        <button onclick="addTransaction()" class="btn-primary w-full py-3 rounded-xl text-sm">
+          + İşlem Ekle
+        </button>
+      </div>
+    </div>
+
+    <!-- LIST -->
+    <div class="lg:col-span-3">
+      <div class="glass rounded-2xl overflow-hidden">
+        <!-- Filters -->
+        <div class="p-4 border-b border-blue-500/10 flex flex-wrap gap-2 items-center justify-between">
+          <h2 class="text-sm font-mono tracking-widest text-blue-400 uppercase">İşlemler</h2>
+          <div class="flex flex-wrap gap-1.5">
+            <button class="filter-btn active" onclick="setFilter('tümü', this)">Tümü</button>
+            <button class="filter-btn" onclick="setFilter('gelir', this)">Gelir</button>
+            <button class="filter-btn" onclick="setFilter('gider', this)">Gider</button>
+          </div>
+        </div>
+
+        <!-- Search & Category Filter -->
+        <div class="px-4 py-3 border-b border-blue-500/06 flex gap-2">
+          <input id="search-input" type="text" placeholder="Açıklama ara..." oninput="renderTransactions()"
+            class="flex-1 rounded-xl px-3 py-2 text-sm" />
+          <select id="cat-filter" onchange="renderTransactions()" class="rounded-xl px-3 py-2 text-sm w-40">
+            <option value="">Tüm Kategoriler</option>
+            <option value="Gıda">Gıda</option>
+            <option value="Fatura">Fatura</option>
+            <option value="Maaş">Maaş</option>
+            <option value="Eğlence">Eğlence</option>
+            <option value="Ulaşım">Ulaşım</option>
+            <option value="Sağlık">Sağlık</option>
+            <option value="Alışveriş">Alışveriş</option>
+            <option value="Kira">Kira</option>
+            <option value="Eğitim">Eğitim</option>
+            <option value="Diğer">Diğer</option>
+          </select>
+        </div>
+
+        <!-- Transaction list -->
+        <div id="transaction-list" class="scroll-area">
+          <div id="empty-state" class="flex flex-col items-center justify-center py-16 text-center hidden">
+            <div class="text-4xl mb-3 opacity-30">💳</div>
+            <p class="text-sm text-slate-600 font-mono">Henüz işlem yok</p>
+          </div>
+        </div>
+
+        <!-- List footer -->
+        <div id="list-footer" class="px-4 py-3 border-t border-blue-500/10 flex justify-between items-center hidden">
+          <span id="footer-count" class="text-xs font-mono text-slate-600"></span>
+          <button onclick="clearAll()" class="btn-danger text-xs px-3 py-1.5 rounded-lg font-semibold font-syne">
+            Tümünü Sil
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="text-center text-xs font-mono text-slate-700 mt-8">Tüm veriler tarayıcınızda saklanır · GitHub Pages uyumlu</p>
+</div>
+
+<script>
+// ─── STATE ───────────────────────────────────────────────
+let transactions = JSON.parse(localStorage.getItem('finans_transactions') || '[]');
+let activeType = 'gelir';
+let activeFilter = 'tümü';
+
+// ─── INIT ────────────────────────────────────────────────
+(function init() {
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('f-tarih').value = today;
+  renderTransactions();
+  updateStats();
+})();
+
+// ─── TYPE TOGGLE ─────────────────────────────────────────
+function setType(type) {
+  activeType = type;
+  const btnG = document.getElementById('btn-gelir');
+  const btnE = document.getElementById('btn-gider');
+
+  if (type === 'gelir') {
+    btnG.className = 'flex-1 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 bg-emerald-500/20 border border-emerald-500/40 text-emerald-400';
+    btnE.className = 'flex-1 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 border border-white/5 text-slate-500 hover:bg-rose-500/10 hover:border-rose-500/20 hover:text-rose-400';
+  } else {
+    btnE.className = 'flex-1 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 bg-rose-500/20 border border-rose-500/40 text-rose-400';
+    btnG.className = 'flex-1 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 border border-white/5 text-slate-500 hover:bg-emerald-500/10 hover:border-emerald-500/20 hover:text-emerald-400';
+  }
+}
+
+// ─── ADD TRANSACTION ─────────────────────────────────────
+function addTransaction() {
+  const miktar = parseFloat(document.getElementById('f-miktar').value);
+  const kategori = document.getElementById('f-kategori').value;
+  const tarih = document.getElementById('f-tarih').value;
+  const aciklama = document.getElementById('f-aciklama').value.trim();
+
+  if (!miktar || miktar <= 0) { showToast('Geçerli bir miktar girin!', 'error'); return; }
+  if (!tarih) { showToast('Tarih seçin!', 'error'); return; }
+
+  const tx = {
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2),
+    tur: activeType,
+    miktar,
+    kategori,
+    tarih,
+    aciklama,
+    createdAt: Date.now()
+  };
+
+  transactions.unshift(tx);
+  save();
+  renderTransactions();
+  updateStats();
+
+  document.getElementById('f-miktar').value = '';
+  document.getElementById('f-aciklama').value = '';
+
+  showToast(`${activeType === 'gelir' ? 'Gelir' : 'Gider'} eklendi ✓`, 'success');
+}
+
+// ─── DELETE ──────────────────────────────────────────────
+function deleteTransaction(id) {
+  transactions = transactions.filter(t => t.id !== id);
+  save();
+  renderTransactions();
+  updateStats();
+  showToast('İşlem silindi', 'info');
+}
+
+function clearAll() {
+  if (!confirm('Tüm işlemler silinsin mi? Bu işlem geri alınamaz.')) return;
+  transactions = [];
+  save();
+  renderTransactions();
+  updateStats();
+  showToast('Tüm işlemler silindi', 'info');
+}
+
+// ─── FILTER ──────────────────────────────────────────────
+function setFilter(filter, btn) {
+  activeFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTransactions();
+}
+
+function getFiltered() {
+  const search = document.getElementById('search-input').value.toLowerCase();
+  const cat = document.getElementById('cat-filter').value;
+
+  return transactions.filter(t => {
+    const matchType = activeFilter === 'tümü' || t.tur === activeFilter;
+    const matchCat = !cat || t.kategori === cat;
+    const matchSearch = !search || t.aciklama.toLowerCase().includes(search) || t.kategori.toLowerCase().includes(search);
+    return matchType && matchCat && matchSearch;
+  });
+}
+
+// ─── RENDER ──────────────────────────────────────────────
+function renderTransactions() {
+  const list = document.getElementById('transaction-list');
+  const empty = document.getElementById('empty-state');
+  const footer = document.getElementById('list-footer');
+  const footerCount = document.getElementById('footer-count');
+
+  const filtered = getFiltered();
+
+  if (filtered.length === 0) {
+    list.innerHTML = '';
+    list.appendChild(empty);
+    empty.classList.remove('hidden');
+    footer.classList.add('hidden');
+    return;
+  }
+
+  empty.classList.add('hidden');
+  footer.classList.remove('hidden');
+  footerCount.textContent = `${filtered.length} işlem`;
+
+  list.innerHTML = filtered.map(t => {
+    const sign = t.tur === 'gelir' ? '+' : '−';
+    const amtClass = t.tur === 'gelir' ? 'amount-positive' : 'amount-negative';
+    const tagClass = t.tur === 'gelir' ? 'tag-gelir' : 'tag-gider';
+    const formattedDate = t.tarih ? formatDate(t.tarih) : '';
+    const emoji = getCategoryEmoji(t.kategori);
+
+    return `
+      <div class="transaction-row">
+        <div class="min-w-0">
+          <div class="flex items-center gap-2 flex-wrap mb-0.5">
+            <span class="text-sm font-semibold text-slate-200 truncate">${emoji} ${t.kategori}</span>
+            <span class="tag ${tagClass}">${t.tur}</span>
+          </div>
+          <div class="flex gap-3 text-xs font-mono text-slate-600 mt-0.5">
+            <span>${formattedDate}</span>
+            ${t.aciklama ? `<span class="truncate text-slate-500">${escHtml(t.aciklama)}</span>` : ''}
+          </div>
+        </div>
+        <div class="text-right">
+          <div class="text-base font-bold font-mono ${amtClass}">${sign}${formatMoney(t.miktar)}</div>
+        </div>
+        <div class="hidden sm:block"></div>
+        <button onclick="deleteTransaction('${t.id}')"
+          class="btn-danger px-2.5 py-1.5 rounded-lg text-xs font-bold flex-shrink-0">
+          Sil
+        </button>
+      </div>`;
+  }).join('');
+}
+
+// ─── STATS ───────────────────────────────────────────────
+function updateStats() {
+  const gelir = transactions.filter(t => t.tur === 'gelir').reduce((s, t) => s + t.miktar, 0);
+  const gider = transactions.filter(t => t.tur === 'gider').reduce((s, t) => s + t.miktar, 0);
+  const bakiye = gelir - gider;
+
+  document.getElementById('stat-bakiye').textContent = (bakiye < 0 ? '−' : '') + '₺' + formatMoney(Math.abs(bakiye));
+  document.getElementById('stat-gelir').textContent = '+₺' + formatMoney(gelir);
+  document.getElementById('stat-gider').textContent = '−₺' + formatMoney(gider);
+
+  const bakiyeEl = document.getElementById('stat-bakiye');
+  bakiyeEl.className = bakiye < 0
+    ? 'text-3xl font-bold amount-negative tracking-tight'
+    : 'text-3xl font-bold text-white tracking-tight';
+}
+
+// ─── EXPORT / IMPORT ─────────────────────────────────────
+function exportData() {
+  if (transactions.length === 0) { showToast('Yedeklenecek veri yok', 'error'); return; }
+  const blob = new Blob([JSON.stringify({ version: 1, exportedAt: new Date().toISOString(), transactions }, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `finans-yedek-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast(`${transactions.length} işlem yedeklendi ✓`, 'success');
+}
+
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      const incoming = data.transactions || data;
+      if (!Array.isArray(incoming)) throw new Error('Geçersiz format');
+      if (!confirm(`${incoming.length} işlem yüklensin mi? Mevcut veriler korunacak.`)) return;
+
+      const existingIds = new Set(transactions.map(t => t.id));
+      const newOnes = incoming.filter(t => !existingIds.has(t.id));
+      transactions = [...transactions, ...newOnes];
+      transactions.sort((a, b) => new Date(b.tarih) - new Date(a.tarih));
+      save();
+      renderTransactions();
+      updateStats();
+      showToast(`${newOnes.length} yeni işlem yüklendi ✓`, 'success');
+    } catch(err) {
+      showToast('Geçersiz JSON dosyası!', 'error');
+    }
+    event.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+// ─── HELPERS ─────────────────────────────────────────────
+function save() {
+  localStorage.setItem('finans_transactions', JSON.stringify(transactions));
+}
+
+function formatMoney(n) {
+  return n.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function formatDate(dateStr) {
+  const [y, m, d] = dateStr.split('-');
+  return `${d}.${m}.${y}`;
+}
+
+function escHtml(str) {
+  const div = document.createElement('div');
+  div.appendChild(document.createTextNode(str));
+  return div.innerHTML;
+}
+
+function getCategoryEmoji(cat) {
+  const map = { 'Gıda':'🍽', 'Fatura':'💡', 'Maaş':'💼', 'Eğlence':'🎮', 'Ulaşım':'🚌', 'Sağlık':'🏥', 'Alışveriş':'🛍', 'Kira':'🏠', 'Eğitim':'📚', 'Diğer':'📦' };
+  return map[cat] || '📦';
+}
+
+function showToast(msg, type = 'info') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `toast toast-${type} show`;
+  setTimeout(() => { el.classList.remove('show'); }, 2800);
+}
+
+// Keyboard shortcut: Enter to submit
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && (e.target.id === 'f-miktar' || e.target.id === 'f-aciklama')) {
+    addTransaction();
+  }
+});
+</script>
+</body>
+</html>

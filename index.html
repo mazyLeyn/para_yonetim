@@ -1019,7 +1019,7 @@
             </div>
           </div>
           <div class="px-4 py-3 border-b border-blue-500/10 flex gap-2">
-            <input id="search-input" type="text" placeholder="Ara..." oninput="renderTransactions()"
+            <input id="search-input" type="text" placeholder="Ara..." oninput="debouncedSearch()"
               class="flex-1 rounded-xl px-3 py-2 text-sm" />
             <select id="cat-filter" onchange="renderTransactions()" class="rounded-xl px-3 py-2 text-sm">
               <option value="">Tüm Kategoriler</option>
@@ -1300,6 +1300,7 @@
       if (!tarih) { toast('Tarih seçin!', 'e'); return; }
       transactions.unshift({ id: Date.now().toString(36) + Math.random().toString(36).slice(2), tur: activeType, miktar: Math.round(miktar * 100) / 100, kategori, tarih, aciklama, walletId: selectedWalletId });
       save();
+      renderWallets();
       document.getElementById('f-miktar').value = '';
       document.getElementById('f-aciklama').value = '';
       toast((activeType === 'gelir' ? '↑ Gelir' : '↓ Gider') + ' eklendi ✓', 's');
@@ -1308,13 +1309,13 @@
     // ═══════════════ DELETE ═══════════════
     function deleteTransaction(id) {
       transactions = transactions.filter(t => t.id !== id);
-      save(); renderTransactions(); renderStats();
+      save(); renderTransactions(); renderStats(); renderWallets();
       toast('İşlem silindi', 'i');
     }
     function clearAll() {
       if (!confirm('Tüm işlemler silinsin mi?')) return;
       transactions = []; save();
-      renderStats(); renderHome(); renderTransactions();
+      renderStats(); renderHome(); renderTransactions(); renderWallets();
       toast('Tümü silindi', 'i');
     }
 
@@ -1526,12 +1527,15 @@
     function fmt(n) { return Number(n).toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
     function fmtShort(n) { return n >= 1e6 ? (n / 1e6).toFixed(1) + 'M' : n >= 1e3 ? (n / 1e3).toFixed(0) + 'K' : Math.round(n).toString(); }
     function fmtDate(s) { if (!s) return ''; const [y, m, d] = s.split('-'); return `${d}.${m}.${y}`; }
-    function esc(s) { const d = document.createElement('div'); d.appendChild(document.createTextNode(s)); return d.innerHTML; }
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
     function rRect(ctx, x, y, w, h, r) { r = Math.min(r, w / 2, h / 2); ctx.beginPath(); ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y); ctx.quadraticCurveTo(x + w, y, x + w, y + r); ctx.lineTo(x + w, y + h); ctx.lineTo(x, y + h); ctx.lineTo(x, y + r); ctx.quadraticCurveTo(x, y, x + r, y); ctx.closePath(); }
     let _tt;
     function toast(msg, type = 'i') { const el = document.getElementById('toast'); el.textContent = msg; el.className = `toast t${type} show`; clearTimeout(_tt); _tt = setTimeout(() => el.classList.remove('show'), 2600); }
+    let _searchTm;
+    function debouncedSearch() { clearTimeout(_searchTm); _searchTm = setTimeout(renderTransactions, 180); }
     document.addEventListener('keydown', e => { if (e.key === 'Enter' && currentPage === 'ekle' && (e.target.id === 'f-miktar' || e.target.id === 'f-aciklama')) addTransaction(); });
-    window.addEventListener('resize', () => { if (currentPage === 'home') drawBarChart(); });
+    let _resizeTm;
+    window.addEventListener('resize', () => { clearTimeout(_resizeTm); _resizeTm = setTimeout(() => { if (currentPage === 'home') drawBarChart(); }, 200); });
   </script>
 </body>
 

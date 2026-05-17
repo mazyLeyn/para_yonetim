@@ -1399,7 +1399,9 @@
     function txRow(t, showDel) {
       const sign = t.tur === 'gelir' ? '+' : '−', ac = t.tur === 'gelir' ? 'pos' : 'neg', tc = t.tur === 'gelir' ? 'tag-g' : 'tag-e';
       const del = showDel ? `<button onclick="deleteTransaction('${t.id}')" class="btn-danger" style="padding:4px 10px;border-radius:8px;font-size:.72rem;font-weight:700;flex-shrink:0">Sil</button>` : '';
-      return `<div class="tx-row"><div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span style="font-size:.85rem;font-weight:600;color:#e2e8f0">${CAT_EMOJI[t.kategori] || '📦'} ${t.kategori}</span><span class="tag ${tc}">${t.tur}</span></div><div style="display:flex;gap:8px;font-family:'DM Mono',monospace;font-size:.7rem;color:#4a5568;margin-top:2px"><span>${fmtDate(t.tarih)}</span>${t.aciklama ? `<span style="color:#374151;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(t.aciklama)}</span>` : ''}</div></div><div class="${ac}" style="font-family:'DM Mono',monospace;font-weight:700;font-size:.95rem;flex-shrink:0">${sign}₺${fmt(t.miktar)}</div>${del}</div>`;
+      const w = wallets.find(x => x.id === t.walletId);
+      const walletBadge = w ? `<span style="color:${w.color};opacity:.85;display:inline-flex;align-items:center;gap:2px">${w.icon} ${esc(w.name)}</span>` : '';
+      return `<div class="tx-row"><div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span style="font-size:.85rem;font-weight:600;color:#e2e8f0">${CAT_EMOJI[t.kategori] || '📦'} ${t.kategori}</span><span class="tag ${tc}">${t.tur}</span></div><div style="display:flex;gap:8px;font-family:'DM Mono',monospace;font-size:.7rem;color:#4a5568;margin-top:2px;align-items:center"><span>${fmtDate(t.tarih)}</span>${walletBadge}${t.aciklama ? `<span style="color:#374151;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(t.aciklama)}</span>` : ''}</div></div><div class="${ac}" style="font-family:'DM Mono',monospace;font-weight:700;font-size:.95rem;flex-shrink:0">${sign}₺${fmt(t.miktar)}</div>${del}</div>`;
     }
 
     // ═══════════════ BAR CHART ═══════════════

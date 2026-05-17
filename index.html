@@ -47,6 +47,9 @@
       background-size: 40px 40px;
       pointer-events: none;
       z-index: 0;
+      transform: translate3d(0, 0, 0);
+      will-change: transform;
+      backface-visibility: hidden;
     }
 
     #app {
@@ -63,6 +66,8 @@
       padding-bottom: 80px;
       scrollbar-width: thin;
       scrollbar-color: rgba(59, 130, 246, .2) transparent;
+      -webkit-overflow-scrolling: touch;
+      will-change: scroll-position;
     }
 
     .page {
@@ -136,9 +141,11 @@
       transition: border-color .25s, box-shadow .25s;
     }
 
-    .card-hover:hover {
-      border-color: rgba(59, 130, 246, .3);
-      box-shadow: 0 0 24px rgba(59, 130, 246, .07);
+    @media (hover: hover) {
+      .card-hover:hover {
+        border-color: rgba(59, 130, 246, .3);
+        box-shadow: 0 0 24px rgba(59, 130, 246, .07);
+      }
     }
 
     input,
@@ -296,6 +303,7 @@
       overflow-y: auto;
       scrollbar-width: thin;
       scrollbar-color: rgba(59, 130, 246, .2) transparent;
+      -webkit-overflow-scrolling: touch;
     }
 
     .progress-bg {
@@ -1024,6 +1032,19 @@
       white-space: nowrap;
       transition: all .2s;
     }
+
+    /* PERFORMANCE OPTIMIZATIONS FOR MOBILE DEVICES */
+    @media (max-width: 768px) {
+      .glass,
+      .wallet-card,
+      .limit-card,
+      #bottom-nav,
+      .modal-bg,
+      #install-banner {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+      }
+    }
   </style>
 </head>
 
@@ -1503,10 +1524,10 @@
           </div>
           <div class="lc-amts">
             <span class="lc-spent" style="color:${spentColor}">${currentCurrency}${fmt(spent)}</span>
-            <span class="lc-lim">${lim > 0 ? '/ ${currentCurrency}' + fmt(lim) : 'limit yok'}</span>
+            <span class="lc-lim">${lim > 0 ? '/ ' + currentCurrency + fmt(lim) : 'limit yok'}</span>
           </div>
           ${lim > 0 ? `<div class="progress-bg" style="margin:0 0 3px"><div class="progress-fill" style="width:${pct}%;background:${barColor}"></div></div>
-          <p class="lc-remain" style="color:${isOver ? '#f43f5e' : '#4a5568'}">${isOver ? 'Limit ${currentCurrency}' + fmt(Math.abs(remaining)) + ' a\u015f\u0131ld\u0131' : 'Kalan: ${currentCurrency}' + fmt(remaining)}</p>` : '<div style="height:6px"></div>'}
+          <p class="lc-remain" style="color:${isOver ? '#f43f5e' : '#4a5568'}">${isOver ? 'Limit ' + currentCurrency + fmt(Math.abs(remaining)) + ' aşıldı' : 'Kalan: ' + currentCurrency + fmt(remaining)}</p>` : '<div style="height:6px"></div>'}
           <div class="lc-row">
             <input type="number" min="0" step="1" placeholder="Limit (${currentCurrency})" value="${lim > 0 ? lim : ''}" class="lc-inp" onchange="setLimit('${cat}',this.value)"/>
             ${lim > 0 ? `<button class="lc-rm" onclick="removeLimit('${cat}')" title="Limiti kald\u0131r">\u2715</button>` : ''}

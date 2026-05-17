@@ -877,6 +877,7 @@
             </div>
           </div>
           <p class="text-xs font-mono text-slate-600" id="current-date"></p>
+          <button id="notif-btn" onclick="requestNotifPermission()" title="Bildirim izni" style="background:none;border:none;cursor:pointer;font-size:1.15rem;opacity:.4;transition:opacity .2s;padding:4px" onmouseenter="this.style.opacity=1" onmouseleave="this.style.opacity=document.getElementById('notif-btn').dataset.granted==='1'?'1':'.4'">🔔</button>
         </div>
 
         <!-- CÜZDANLAR -->
@@ -1631,6 +1632,43 @@
     function rRect(ctx, x, y, w, h, r) { r = Math.min(r, w / 2, h / 2); ctx.beginPath(); ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y); ctx.quadraticCurveTo(x + w, y, x + w, y + r); ctx.lineTo(x + w, y + h); ctx.lineTo(x, y + h); ctx.lineTo(x, y + r); ctx.quadraticCurveTo(x, y, x + r, y); ctx.closePath(); }
     let _tt;
     function toast(msg, type = 'i') { const el = document.getElementById('toast'); el.textContent = msg; el.className = `toast t${type} show`; clearTimeout(_tt); _tt = setTimeout(() => el.classList.remove('show'), 2600); }
+    // ═══════════════ SERVICE WORKER + NOTIFICATIONS ═══════════════
+    function getLastTxDate() {
+      const dates = transactions.map(t => t.tarih).filter(Boolean).sort();
+      return dates.length ? dates[dates.length - 1] : null;
+    }
+    function checkReminder() {
+      if (!('Notification' in window) || Notification.permission !== 'granted') return;
+      const today = new Date().toDateString();
+      if (localStorage.getItem('fins_notif_day') === today) return; // once per day
+      localStorage.setItem('fins_notif_day', today);
+      const lastTxDate = getLastTxDate();
+      navigator.serviceWorker?.ready.then(reg => {
+        reg.active?.postMessage({ type: 'FINS_CHECK_REMINDER', lastTxDate });
+      });
+    }
+    async function requestNotifPermission() {
+      if (!('Notification' in window)) { toast('Tarayıcınız bildirim desteklemiyor', 'e'); return; }
+      if (Notification.permission === 'granted') { toast('Bildirimler zaten açık 🔔', 'i'); return; }
+      if (Notification.permission === 'denied') { toast('Bildirimler engellendi. Tarayıcı ayarlarından açabilirsiniz.', 'e'); return; }
+      const result = await Notification.requestPermission();
+      if (result === 'granted') {
+        const btn = document.getElementById('notif-btn');
+        if (btn) { btn.style.opacity = '1'; btn.dataset.granted = '1'; }
+        toast('Bildirimler açıldı! Sizi hatırlatacağız 🔔', 's');
+        checkReminder();
+      } else {
+        toast('Bildirim izni verilmedi', 'i');
+      }
+    }
+    // Register SW
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').then(() => {
+        const btn = document.getElementById('notif-btn');
+        if (Notification.permission === 'granted' && btn) { btn.style.opacity = '1'; btn.dataset.granted = '1'; }
+        setTimeout(checkReminder, 2000);
+      }).catch(() => {});
+    }
     let _searchTm;
     function debouncedSearch() { clearTimeout(_searchTm); _searchTm = setTimeout(renderTransactions, 180); }
     document.addEventListener('keydown', e => { if (e.key === 'Enter' && currentPage === 'ekle' && (e.target.id === 'f-miktar' || e.target.id === 'f-aciklama')) addTransaction(); });

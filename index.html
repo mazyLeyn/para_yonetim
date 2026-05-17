@@ -563,41 +563,205 @@
     }
 
     /* Limiter */
-    .limit-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px;}
-    .limit-card{background:rgba(13,18,32,.85);border:1.5px solid rgba(59,130,246,.12);border-radius:16px;padding:14px 13px 12px;backdrop-filter:blur(10px);transition:border-color .25s;}
-    .limit-card:hover{border-color:rgba(59,130,246,.3);}
-    .limit-card.lc-over{border-color:rgba(244,63,94,.4);}
-    .lc-head{display:flex;align-items:center;gap:6px;margin-bottom:8px;}
-    .lc-ico{font-size:1.15rem;}
-    .lc-nam{font-family:'Syne',sans-serif;font-size:.68rem;font-weight:700;color:#94a3b8;letter-spacing:.03em;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    .lc-badge{font-size:.58rem;color:#f43f5e;font-family:'DM Mono',monospace;white-space:nowrap;}
-    .lc-amts{display:flex;align-items:baseline;gap:5px;margin-bottom:6px;}
-    .lc-spent{font-family:'DM Mono',monospace;font-size:.85rem;font-weight:700;}
-    .lc-lim{font-family:'DM Mono',monospace;font-size:.65rem;color:#4a5568;}
-    .lc-remain{font-family:'DM Mono',monospace;font-size:.6rem;margin-top:3px;}
-    .lc-row{display:flex;align-items:center;gap:5px;margin-top:9px;}
-    .lc-inp{flex:1;padding:6px 9px;border-radius:8px;font-size:.75rem;font-family:'DM Mono',monospace;min-width:0;}
-    .lc-rm{background:none;border:none;color:#374151;cursor:pointer;font-size:.8rem;padding:3px 5px;border-radius:4px;transition:color .15s;flex-shrink:0;}
-    .lc-rm:hover{color:#f43f5e;}
+    .limit-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+      gap: 12px;
+    }
+
+    .limit-card {
+      background: rgba(13, 18, 32, .85);
+      border: 1.5px solid rgba(59, 130, 246, .12);
+      border-radius: 16px;
+      padding: 14px 13px 12px;
+      backdrop-filter: blur(10px);
+      transition: border-color .25s;
+    }
+
+    .limit-card:hover {
+      border-color: rgba(59, 130, 246, .3);
+    }
+
+    .limit-card.lc-over {
+      border-color: rgba(244, 63, 94, .4);
+    }
+
+    .lc-head {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .lc-ico {
+      font-size: 1.15rem;
+    }
+
+    .lc-nam {
+      font-family: 'Syne', sans-serif;
+      font-size: .68rem;
+      font-weight: 700;
+      color: #94a3b8;
+      letter-spacing: .03em;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .lc-badge {
+      font-size: .58rem;
+      color: #f43f5e;
+      font-family: 'DM Mono', monospace;
+      white-space: nowrap;
+    }
+
+    .lc-amts {
+      display: flex;
+      align-items: baseline;
+      gap: 5px;
+      margin-bottom: 6px;
+    }
+
+    .lc-spent {
+      font-family: 'DM Mono', monospace;
+      font-size: .85rem;
+      font-weight: 700;
+    }
+
+    .lc-lim {
+      font-family: 'DM Mono', monospace;
+      font-size: .65rem;
+      color: #4a5568;
+    }
+
+    .lc-remain {
+      font-family: 'DM Mono', monospace;
+      font-size: .6rem;
+      margin-top: 3px;
+    }
+
+    .lc-row {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 9px;
+    }
+
+    .lc-inp {
+      flex: 1;
+      padding: 6px 9px;
+      border-radius: 8px;
+      font-size: .75rem;
+      font-family: 'DM Mono', monospace;
+      min-width: 0;
+    }
+
+    .lc-rm {
+      background: none;
+      border: none;
+      color: #374151;
+      cursor: pointer;
+      font-size: .8rem;
+      padding: 3px 5px;
+      border-radius: 4px;
+      transition: color .15s;
+      flex-shrink: 0;
+    }
+
+    .lc-rm:hover {
+      color: #f43f5e;
+    }
 
     /* LIGHT THEME OVERRIDES */
-    .light body { background: #f8fafc; color: #0f172a; }
-    .light body::before { background-image: linear-gradient(rgba(59, 130, 246, .08)1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, .08)1px, transparent 1px); }
-    .light #bottom-nav { background: rgba(255,255,255,.95); border-top-color: rgba(59,130,246,.15); }
-    .light .glass { background: rgba(255,255,255,.85); border-color: rgba(59,130,246,.15); }
-    .light input, .light select { background: rgba(255,255,255,.85) !important; border-color: rgba(59,130,246,.2) !important; color: #0f172a !important; }
-    .light select option { background: #ffffff; color: #0f172a; }
-    .light .limit-card { background: rgba(255,255,255,.85); border-color: rgba(59,130,246,.15); }
-    .light .wpick-btn { background: rgba(255,255,255,.6); border-color: rgba(59,130,246,.15); }
-    .light .text-white { color: #0f172a !important; }
-    .light .text-slate-700, .light .text-slate-600, .light .text-slate-500 { color: #475569 !important; }
-    .light .tx-row { border-bottom-color: rgba(59,130,246,.1); }
-    .light .modal-bg { background: rgba(255,255,255,.65); }
-    .light .modal-content { background: #ffffff; border-color: rgba(59,130,246,.15); box-shadow: 0 10px 40px rgba(59,130,246,.1); }
-    .light .stat-card .bg-blue-500, .light .stat-card .bg-emerald-500, .light .stat-card .bg-rose-500 { opacity: 0.8; }
-    .light .tag { background: rgba(241,245,249,1); border-color: rgba(203,213,225,1); color: #475569; }
-    .light .tag-g { background: rgba(16,185,129,.1); border-color: rgba(16,185,129,.2); color: #059669; }
-    .light .tag-e { background: rgba(244,63,94,.1); border-color: rgba(244,63,94,.2); color: #e11d48; }
+    .light body {
+      background: #f8fafc;
+      color: #0f172a;
+    }
+
+    .light body::before {
+      background-image: linear-gradient(rgba(59, 130, 246, .08)1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, .08)1px, transparent 1px);
+    }
+
+    .light #bottom-nav {
+      background: rgba(255, 255, 255, .95);
+      border-top-color: rgba(59, 130, 246, .15);
+    }
+
+    .light .glass {
+      background: rgba(255, 255, 255, .85);
+      border-color: rgba(59, 130, 246, .15);
+    }
+
+    .light input,
+    .light select {
+      background: rgba(255, 255, 255, .85) !important;
+      border-color: rgba(59, 130, 246, .2) !important;
+      color: #0f172a !important;
+    }
+
+    .light select option {
+      background: #ffffff;
+      color: #0f172a;
+    }
+
+    .light .limit-card {
+      background: rgba(255, 255, 255, .85);
+      border-color: rgba(59, 130, 246, .15);
+    }
+
+    .light .wpick-btn {
+      background: rgba(255, 255, 255, .6);
+      border-color: rgba(59, 130, 246, .15);
+    }
+
+    .light .text-white {
+      color: #0f172a !important;
+    }
+
+    .light .text-slate-700,
+    .light .text-slate-600,
+    .light .text-slate-500 {
+      color: #475569 !important;
+    }
+
+    .light .tx-row {
+      border-bottom-color: rgba(59, 130, 246, .1);
+    }
+
+    .light .modal-bg {
+      background: rgba(255, 255, 255, .65);
+    }
+
+    .light .modal-content {
+      background: #ffffff;
+      border-color: rgba(59, 130, 246, .15);
+      box-shadow: 0 10px 40px rgba(59, 130, 246, .1);
+    }
+
+    .light .stat-card .bg-blue-500,
+    .light .stat-card .bg-emerald-500,
+    .light .stat-card .bg-rose-500 {
+      opacity: 0.8;
+    }
+
+    .light .tag {
+      background: rgba(241, 245, 249, 1);
+      border-color: rgba(203, 213, 225, 1);
+      color: #475569;
+    }
+
+    .light .tag-g {
+      background: rgba(16, 185, 129, .1);
+      border-color: rgba(16, 185, 129, .2);
+      color: #059669;
+    }
+
+    .light .tag-e {
+      background: rgba(244, 63, 94, .1);
+      border-color: rgba(244, 63, 94, .2);
+      color: #e11d48;
+    }
 
     .wallet-add-btn {
       flex-shrink: 0;
@@ -901,8 +1065,6 @@
           </div>
           <div class="flex items-center gap-1">
             <p class="text-xs font-mono text-slate-600 mr-2" id="current-date"></p>
-            <button id="theme-btn" onclick="toggleTheme()" title="Tema Değiştir" style="background:none;border:none;cursor:pointer;font-size:1.15rem;opacity:.7;transition:opacity .2s;padding:4px" onmouseenter="this.style.opacity=1" onmouseleave="this.style.opacity='.7'">🌙</button>
-            <button id="notif-btn" onclick="requestNotifPermission()" title="Bildirim izni" style="background:none;border:none;cursor:pointer;font-size:1.15rem;opacity:.4;transition:opacity .2s;padding:4px" onmouseenter="this.style.opacity=1" onmouseleave="this.style.opacity=document.getElementById('notif-btn').dataset.granted==='1'?'1':'.4'">🔔</button>
           </div>
         </div>
 
@@ -1120,7 +1282,35 @@
         <h2 class="text-2xl tracking-tight text-white mb-1" style="font-weight:800">Limiter</h2>
         <p class="text-xs font-mono text-slate-600 mb-6" id="limiter-month-label"></p>
         <div id="limit-grid" class="limit-grid"></div>
-        <p class="text-xs font-mono text-slate-700 mt-6 text-center">Limit belirlemek için alana miktar girip Enter'a basın</p>
+        <p class="text-xs font-mono text-slate-700 mt-6 text-center">Limit belirlemek için alana miktar girip Enter'a
+          basın</p>
+      </div>
+
+      <!-- AYARLAR -->
+      <div id="page-ayarlar" class="page">
+        <h2 class="text-2xl tracking-tight text-white mb-6" style="font-weight:800">Ayarlar</h2>
+        <div class="space-y-4">
+          <div class="glass rounded-2xl p-5 card-hover flex justify-between items-center">
+            <span class="text-sm font-semibold text-slate-700 dark:text-slate-300">Tema Modu</span>
+            <button onclick="toggleTheme()" class="fbtn flex items-center gap-2"><span id="theme-btn-ayarlar">🌙</span> Değiştir</button>
+          </div>
+          <div class="glass rounded-2xl p-5 card-hover flex justify-between items-center">
+            <span class="text-sm font-semibold text-slate-700 dark:text-slate-300">Bildirimler</span>
+            <button id="notif-btn-ayarlar" onclick="requestNotifPermission()" class="fbtn">Aktifleştir</button>
+          </div>
+          <div class="glass rounded-2xl p-5 card-hover flex justify-between items-center">
+            <span class="text-sm font-semibold text-slate-700 dark:text-slate-300">Para Birimi</span>
+            <select id="currency-select" onchange="changeCurrency(this.value)" class="rounded-xl px-3 py-1.5 text-sm" style="background:rgba(20,27,45,.85);border:1px solid rgba(59,130,246,.15);color:#e2e8f0;font-family:'Syne',sans-serif;outline:none;">
+              <option value="₺">₺ (TRY)</option>
+              <option value="$">$ (USD)</option>
+              <option value="€">€ (EUR)</option>
+              <option value="£">£ (GBP)</option>
+            </select>
+          </div>
+        </div>
+        <div class="mt-8 text-center pt-4 opacity-50">
+          <p class="text-xs font-mono text-slate-500">Fins v2.1.0</p>
+        </div>
       </div>
 
     </div><!-- /pages -->
@@ -1176,9 +1366,9 @@
       </button>
       <button class="nav-btn" id="nav-limiter" onclick="goPage('limiter')">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8">
-          <circle cx="12" cy="12" r="9"/>
-          <circle cx="12" cy="12" r="3"/>
-          <path stroke-linecap="round" d="M12 3v3M12 18v3M3 12h3M18 12h3"/>
+          <circle cx="12" cy="12" r="9" />
+          <circle cx="12" cy="12" r="3" />
+          <path stroke-linecap="round" d="M12 3v3M12 18v3M3 12h3M18 12h3" />
         </svg>
         Limiter
       </button>
@@ -1188,6 +1378,14 @@
           <path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
         </svg>
         Grafik
+      </button>
+      <button class="nav-btn" id="nav-ayarlar" onclick="goPage('ayarlar')">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8">
+          <circle cx="5" cy="12" r="2" />
+          <circle cx="12" cy="12" r="2" />
+          <circle cx="19" cy="12" r="2" />
+        </svg>
+        Ayarlar
       </button>
     </nav>
   </div>
@@ -1277,7 +1475,7 @@
     }
 
     // ═══════════════ LIMITER ═══════════════
-    const LIM_CATS = ['G\u0131da','Fatura','E\u011flence','Ula\u015f\u0131m','Sa\u011fl\u0131k','Al\u0131\u015fveri\u015f','Kira','E\u011fitim','Di\u011fer','Maa\u015f'];
+    const LIM_CATS = ['G\u0131da', 'Fatura', 'E\u011flence', 'Ula\u015f\u0131m', 'Sa\u011fl\u0131k', 'Al\u0131\u015fveri\u015f', 'Kira', 'E\u011fitim', 'Di\u011fer', 'Maa\u015f'];
     function renderLimiter() {
       const now = new Date();
       const ym = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
@@ -1371,7 +1569,7 @@
       document.getElementById('f-tarih').value = today.toISOString().split('T')[0];
       document.getElementById('current-date').textContent = today.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
       document.getElementById('this-month-label').textContent = today.toLocaleDateString('tr-TR', { month: 'long', year: 'numeric' });
-      
+
       const tb = document.getElementById('theme-btn');
       if (tb) tb.textContent = document.getElementById('html-root').classList.contains('light') ? '☀️' : '🌙';
 
@@ -1400,6 +1598,7 @@
       if (name === 'islemler') renderTransactions();
       if (name === 'limiter') renderLimiter();
       if (name === 'grafik') renderGrafik();
+      if (name === 'ayarlar') document.getElementById('currency-select').value = CURRENCY;
     }
 
     // ═══════════════ TYPE ═══════════════
@@ -1409,18 +1608,27 @@
       document.getElementById('btn-gider').style.cssText = type === 'gider' ? 'background:rgba(244,63,94,.18);border-color:rgba(244,63,94,.45);color:#f43f5e;' : 'background:transparent;border-color:rgba(255,255,255,.06);color:#4a5568;';
     }
 
-    // ═══════════════ THEME ═══════════════
+    // ═══════════════ THEME & SETTINGS ═══════════════
+    let CURRENCY = localStorage.getItem('fins_currency') || '₺';
+    function changeCurrency(val) {
+      CURRENCY = val;
+      localStorage.setItem('fins_currency', val);
+      document.getElementById('lbl-miktar').textContent = `MİKTAR (${val})`;
+      renderStats(); renderHome(); renderTransactions(); renderGrafik(); renderLimiter();
+      toast('Para birimi güncellendi ✓', 's');
+    }
+
     function toggleTheme() {
       const root = document.getElementById('html-root');
       const isLight = root.classList.contains('light');
       if (isLight) {
         root.className = 'dark';
         localStorage.setItem('fins_theme', 'dark');
-        document.getElementById('theme-btn').textContent = '🌙';
+        const tb = document.getElementById('theme-btn-ayarlar'); if (tb) tb.textContent = '🌙';
       } else {
         root.className = 'light';
         localStorage.setItem('fins_theme', 'light');
-        document.getElementById('theme-btn').textContent = '☀️';
+        const tb = document.getElementById('theme-btn-ayarlar'); if (tb) tb.textContent = '☀️';
       }
       if (currentPage === 'home') drawBarChart();
     }
@@ -1675,7 +1883,7 @@
     function fmt(n) { return Number(n).toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
     function fmtShort(n) { return n >= 1e6 ? (n / 1e6).toFixed(1) + 'M' : n >= 1e3 ? (n / 1e3).toFixed(0) + 'K' : Math.round(n).toString(); }
     function fmtDate(s) { if (!s) return ''; const [y, m, d] = s.split('-'); return `${d}.${m}.${y}`; }
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+    function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
     function rRect(ctx, x, y, w, h, r) { r = Math.min(r, w / 2, h / 2); ctx.beginPath(); ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y); ctx.quadraticCurveTo(x + w, y, x + w, y + r); ctx.lineTo(x + w, y + h); ctx.lineTo(x, y + h); ctx.lineTo(x, y + r); ctx.quadraticCurveTo(x, y, x + r, y); ctx.closePath(); }
     let _tt;
     function toast(msg, type = 'i') { const el = document.getElementById('toast'); el.textContent = msg; el.className = `toast t${type} show`; clearTimeout(_tt); _tt = setTimeout(() => el.classList.remove('show'), 2600); }
@@ -1714,7 +1922,7 @@
         const btn = document.getElementById('notif-btn');
         if (Notification.permission === 'granted' && btn) { btn.style.opacity = '1'; btn.dataset.granted = '1'; }
         setTimeout(checkReminder, 2000);
-      }).catch(() => {});
+      }).catch(() => { });
     }
     let _searchTm;
     function debouncedSearch() { clearTimeout(_searchTm); _searchTm = setTimeout(renderTransactions, 180); }

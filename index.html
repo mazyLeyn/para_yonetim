@@ -1065,6 +1065,11 @@
           </div>
           <div class="flex items-center gap-1">
             <p class="text-xs font-mono text-slate-600 mr-2" id="current-date"></p>
+            <button onclick="openSettingsModal()" title="Ayarlar"
+              style="background:none;border:none;cursor:pointer;font-size:1.4rem;color:#64748b;transition:color .2s;padding:4px"
+              onmouseenter="this.style.color='#93c5fd'" onmouseleave="this.style.color='#64748b'">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
           </div>
         </div>
 
@@ -1074,17 +1079,17 @@
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
           <div class="glass rounded-2xl p-5 stat-card sc-b card-hover">
             <p class="text-xs font-mono text-blue-400 tracking-widest uppercase mb-2">Toplam Bakiye</p>
-            <p id="stat-bakiye" class="text-3xl font-bold text-white tracking-tight">₺0,00</p>
+            <p id="stat-bakiye" class="text-3xl font-bold text-white tracking-tight"><span class="currency-symbol">₺</span>0,00</p>
             <div class="mt-3 h-0.5 w-10 rounded-full bg-blue-500 opacity-50"></div>
           </div>
           <div class="glass rounded-2xl p-5 stat-card sc-g card-hover">
             <p class="text-xs font-mono text-emerald-400 tracking-widest uppercase mb-2">Toplam Gelir</p>
-            <p id="stat-gelir" class="text-3xl font-bold pos tracking-tight">₺0,00</p>
+            <p id="stat-gelir" class="text-3xl font-bold pos tracking-tight"><span class="currency-symbol">₺</span>0,00</p>
             <div class="mt-3 h-0.5 w-10 rounded-full bg-emerald-500 opacity-50"></div>
           </div>
           <div class="glass rounded-2xl p-5 stat-card sc-e card-hover">
             <p class="text-xs font-mono text-rose-400 tracking-widest uppercase mb-2">Toplam Gider</p>
-            <p id="stat-gider" class="text-3xl font-bold neg tracking-tight">₺0,00</p>
+            <p id="stat-gider" class="text-3xl font-bold neg tracking-tight"><span class="currency-symbol">₺</span>0,00</p>
             <div class="mt-3 h-0.5 w-10 rounded-full bg-rose-500 opacity-50"></div>
           </div>
         </div>
@@ -1097,11 +1102,11 @@
           <div class="grid grid-cols-2 gap-4 mb-4">
             <div>
               <p class="text-xs font-mono text-slate-600 mb-1">Gelir</p>
-              <p id="month-gelir" class="text-xl font-bold pos">₺0,00</p>
+              <p id="month-gelir" class="text-xl font-bold pos"><span class="currency-symbol">₺</span>0,00</p>
             </div>
             <div>
               <p class="text-xs font-mono text-slate-600 mb-1">Gider</p>
-              <p id="month-gider" class="text-xl font-bold neg">₺0,00</p>
+              <p id="month-gider" class="text-xl font-bold neg"><span class="currency-symbol">₺</span>0,00</p>
             </div>
           </div>
           <div class="progress-bg">
@@ -1162,7 +1167,7 @@
               <div id="wallet-picker" class="flex gap-2 flex-wrap"></div>
             </div>
             <div>
-              <label class="block text-xs font-mono text-slate-500 tracking-wider mb-1.5">MİKTAR (₺)</label>
+              <label class="block text-xs font-mono text-slate-500 tracking-wider mb-1.5">MİKTAR (<span class="currency-symbol">₺</span>)</label>
               <input id="f-miktar" type="number" min="0" step="0.01" placeholder="0.00"
                 class="w-full rounded-xl px-4 py-3 text-xl font-bold font-mono" />
             </div>
@@ -1286,35 +1291,6 @@
           basın</p>
       </div>
 
-      <!-- AYARLAR -->
-      <div id="page-ayarlar" class="page">
-        <h2 class="text-2xl tracking-tight text-white mb-6" style="font-weight:800">Ayarlar</h2>
-        <div class="space-y-4">
-          <div class="glass rounded-2xl p-5 card-hover flex justify-between items-center">
-            <span class="text-sm font-semibold text-slate-700 dark:text-slate-300">Tema Modu</span>
-            <button onclick="toggleTheme()" class="fbtn flex items-center gap-2"><span id="theme-btn-ayarlar">🌙</span>
-              Değiştir</button>
-          </div>
-          <div class="glass rounded-2xl p-5 card-hover flex justify-between items-center">
-            <span class="text-sm font-semibold text-slate-700 dark:text-slate-300">Bildirimler</span>
-            <button id="notif-btn-ayarlar" onclick="requestNotifPermission()" class="fbtn">Aktifleştir</button>
-          </div>
-          <div class="glass rounded-2xl p-5 card-hover flex justify-between items-center">
-            <span class="text-sm font-semibold text-slate-700 dark:text-slate-300">Para Birimi</span>
-            <select id="currency-select" onchange="changeCurrency(this.value)" class="rounded-xl px-3 py-1.5 text-sm"
-              style="background:rgba(20,27,45,.85);border:1px solid rgba(59,130,246,.15);color:#e2e8f0;font-family:'Syne',sans-serif;outline:none;">
-              <option value="₺">₺ (TRY)</option>
-              <option value="$">$ (USD)</option>
-              <option value="€">€ (EUR)</option>
-              <option value="£">£ (GBP)</option>
-            </select>
-          </div>
-        </div>
-        <div class="mt-8 text-center pt-4 opacity-50">
-          <p class="text-xs font-mono text-slate-500">Fins v2.1.0</p>
-        </div>
-      </div>
-
     </div><!-- /pages -->
 
     <!-- CÜZDAN MODAL -->
@@ -1340,6 +1316,39 @@
             <div class="clr-row" id="wm-colors"></div>
           </div>
           <button onclick="saveWallet()" class="btn-primary w-full py-3 rounded-xl text-sm">+ Cüzdan Ekle</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- AYARLAR MODAL -->
+    <div id="settings-modal" class="modal-bg" onclick="if(event.target===this)closeSettingsModal()">
+      <div class="modal-sheet">
+        <div class="flex items-center justify-between mb-5">
+          <h3 style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:#e2e8f0">Ayarlar</h3>
+          <button onclick="closeSettingsModal()"
+            style="background:none;border:none;color:#4a5568;font-size:1.3rem;cursor:pointer;line-height:1">✕</button>
+        </div>
+        <div class="space-y-4">
+          <!-- Theme -->
+          <div class="flex items-center justify-between py-2 border-b border-blue-500/10">
+            <span class="text-sm font-mono text-slate-400">Tema</span>
+            <button id="modal-theme-btn" onclick="toggleTheme()" class="btn-primary px-4 py-2 rounded-xl text-xs">Koyu Tema: Açık</button>
+          </div>
+          <!-- Notifications -->
+          <div class="flex items-center justify-between py-2 border-b border-blue-500/10">
+            <span class="text-sm font-mono text-slate-400">Bildirimler</span>
+            <button id="modal-notif-btn" onclick="requestNotifPermission()" class="btn-primary px-4 py-2 rounded-xl text-xs">İzin Ver</button>
+          </div>
+          <!-- Currency -->
+          <div class="flex items-center justify-between py-2 border-b border-blue-500/10">
+            <span class="text-sm font-mono text-slate-400">Para Birimi</span>
+            <select id="currency-select" onchange="changeCurrency(this.value)" class="rounded-xl px-3 py-2 text-sm" style="background:rgba(20,27,45,.85);border:1px solid rgba(59,130,246,.15);color:#e2e8f0;cursor:pointer">
+              <option value="₺">₺ (TRY)</option>
+              <option value="$">$ (USD)</option>
+              <option value="€">€ (EUR)</option>
+              <option value="£">£ (GBP)</option>
+            </select>
+          </div>
         </div>
       </div>
     </div>
@@ -1381,14 +1390,6 @@
         </svg>
         Grafik
       </button>
-      <button class="nav-btn" id="nav-ayarlar" onclick="goPage('ayarlar')">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8">
-          <circle cx="5" cy="12" r="2" />
-          <circle cx="12" cy="12" r="2" />
-          <circle cx="19" cy="12" r="2" />
-        </svg>
-        Ayarlar
-      </button>
     </nav>
   </div>
 
@@ -1399,6 +1400,7 @@
     let activeFilter = 'tümü';
     let currentPage = 'home';
     let selectedYear = new Date().getFullYear();
+    let currentCurrency = localStorage.getItem('fins_currency') || '₺';
 
     // ═══════════════ WALLET STATE ═══════════════
     const DEFAULT_WALLETS = [{ id: 'w1', name: 'Nakit', icon: '💵', color: '#10b981' }, { id: 'w2', name: 'Banka Kartı', icon: '🏦', color: '#3b82f6' }, { id: 'w3', name: 'Kredi Kartı', icon: '💳', color: '#8b5cf6' }];
@@ -1422,14 +1424,14 @@
       const { bakiye: ab } = walletBal('all');
       let h = `<div class="wallet-card${activeWalletId === 'all' ? ' wsel' : ''}" style="--wc:#3b82f6" onclick="setActiveWallet('all')">
     <span class="wc-icon">💰</span><div class="wc-name">TÜMÜ</div>
-    <div class="wc-bal" style="color:${ab < 0 ? '#f43f5e' : '#e2e8f0'}">${ab < 0 ? '−' : ''}\u20ba${fmtShort(Math.abs(ab))}</div>
+    <div class="wc-bal" style="color:${ab < 0 ? '#f43f5e' : '#e2e8f0'}">${ab < 0 ? '−' : ''}${currentCurrency}${fmtShort(Math.abs(ab))}</div>
     <div class="wc-sub">${wallets.length} cüzdan</div></div>`;
       wallets.forEach(w => {
         const { bakiye: b } = walletBal(w.id); const cnt = walletTx(w.id).length;
         h += `<div class="wallet-card${activeWalletId === w.id ? ' wsel' : ''}" style="--wc:${w.color}" onclick="setActiveWallet('${w.id}')">
       <button class="wc-del" onclick="event.stopPropagation();deleteWallet('${w.id}')">✕</button>
       <span class="wc-icon">${w.icon}</span><div class="wc-name">${esc(w.name).toUpperCase()}</div>
-      <div class="wc-bal" style="color:${b < 0 ? '#f43f5e' : w.color}">${b < 0 ? '\u2212' : ''}\u20ba${fmtShort(Math.abs(b))}</div>
+      <div class="wc-bal" style="color:${b < 0 ? '#f43f5e' : w.color}">${b < 0 ? '\u2212' : ''}${currentCurrency}${fmtShort(Math.abs(b))}</div>
       <div class="wc-sub">${cnt} i\u015flem</div></div>`;
       });
       h += `<button class="wallet-add-btn" onclick="openWalletModal()"><span style="font-size:1.4rem;line-height:1">＋</span><span>Ekle</span></button>`;
@@ -1500,13 +1502,13 @@
             ${isOver ? '<span class="lc-badge">\u26a0\ufe0f A\u015f\u0131ld\u0131</span>' : ''}
           </div>
           <div class="lc-amts">
-            <span class="lc-spent" style="color:${spentColor}">\u20ba${fmt(spent)}</span>
-            <span class="lc-lim">${lim > 0 ? '/ \u20ba' + fmt(lim) : 'limit yok'}</span>
+            <span class="lc-spent" style="color:${spentColor}">${currentCurrency}${fmt(spent)}</span>
+            <span class="lc-lim">${lim > 0 ? '/ ${currentCurrency}' + fmt(lim) : 'limit yok'}</span>
           </div>
           ${lim > 0 ? `<div class="progress-bg" style="margin:0 0 3px"><div class="progress-fill" style="width:${pct}%;background:${barColor}"></div></div>
-          <p class="lc-remain" style="color:${isOver ? '#f43f5e' : '#4a5568'}">${isOver ? 'Limit \u20ba' + fmt(Math.abs(remaining)) + ' a\u015f\u0131ld\u0131' : 'Kalan: \u20ba' + fmt(remaining)}</p>` : '<div style="height:6px"></div>'}
+          <p class="lc-remain" style="color:${isOver ? '#f43f5e' : '#4a5568'}">${isOver ? 'Limit ${currentCurrency}' + fmt(Math.abs(remaining)) + ' a\u015f\u0131ld\u0131' : 'Kalan: ${currentCurrency}' + fmt(remaining)}</p>` : '<div style="height:6px"></div>'}
           <div class="lc-row">
-            <input type="number" min="0" step="1" placeholder="Limit (\u20ba)" value="${lim > 0 ? lim : ''}" class="lc-inp" onchange="setLimit('${cat}',this.value)"/>
+            <input type="number" min="0" step="1" placeholder="Limit (${currentCurrency})" value="${lim > 0 ? lim : ''}" class="lc-inp" onchange="setLimit('${cat}',this.value)"/>
             ${lim > 0 ? `<button class="lc-rm" onclick="removeLimit('${cat}')" title="Limiti kald\u0131r">\u2715</button>` : ''}
           </div>
         </div>`;
@@ -1517,7 +1519,7 @@
       if (!val || isNaN(v) || v <= 0) { delete limits[cat]; } else { limits[cat] = Math.round(v * 100) / 100; }
       saveLimits();
       renderLimiter();
-      if (limits[cat]) toast(`${CAT_EMOJI[cat] || ''} ${cat} limiti \u20ba${fmt(limits[cat])} olarak ayarland\u0131`, 's');
+      if (limits[cat]) toast(`${CAT_EMOJI[cat] || ''} ${cat} limiti ${currentCurrency}${fmt(limits[cat])} olarak ayarland\u0131`, 's');
     }
     function removeLimit(cat) {
       delete limits[cat]; saveLimits(); renderLimiter();
@@ -1572,8 +1574,13 @@
       document.getElementById('current-date').textContent = today.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
       document.getElementById('this-month-label').textContent = today.toLocaleDateString('tr-TR', { month: 'long', year: 'numeric' });
 
-      const tb = document.getElementById('theme-btn');
-      if (tb) tb.textContent = document.getElementById('html-root').classList.contains('light') ? '☀️' : '🌙';
+      const isLight = document.getElementById('html-root').classList.contains('light');
+      const mb = document.getElementById('modal-theme-btn');
+      if (mb) mb.textContent = isLight ? 'Açık Tema: Aktif' : 'Koyu Tema: Aktif';
+
+      const cs = document.getElementById('currency-select');
+      if (cs) cs.value = currentCurrency;
+      updateCurrencyLabels();
 
       setType('gelir');
       renderWallets();
@@ -1600,7 +1607,6 @@
       if (name === 'islemler') renderTransactions();
       if (name === 'limiter') renderLimiter();
       if (name === 'grafik') renderGrafik();
-      if (name === 'ayarlar') document.getElementById('currency-select').value = CURRENCY;
     }
 
     // ═══════════════ TYPE ═══════════════
@@ -1610,29 +1616,41 @@
       document.getElementById('btn-gider').style.cssText = type === 'gider' ? 'background:rgba(244,63,94,.18);border-color:rgba(244,63,94,.45);color:#f43f5e;' : 'background:transparent;border-color:rgba(255,255,255,.06);color:#4a5568;';
     }
 
-    // ═══════════════ THEME & SETTINGS ═══════════════
-    let CURRENCY = localStorage.getItem('fins_currency') || '₺';
-    function changeCurrency(val) {
-      CURRENCY = val;
-      localStorage.setItem('fins_currency', val);
-      document.getElementById('lbl-miktar').textContent = `MİKTAR (${val})`;
-      renderStats(); renderHome(); renderTransactions(); renderGrafik(); renderLimiter();
-      toast('Para birimi güncellendi ✓', 's');
+    // ═══════════════ AYARLAR / THEME / CURRENCY ═══════════════
+    function openSettingsModal() {
+      document.getElementById('settings-modal').classList.add('show');
     }
-
+    function closeSettingsModal() {
+      document.getElementById('settings-modal').classList.remove('show');
+    }
     function toggleTheme() {
       const root = document.getElementById('html-root');
       const isLight = root.classList.contains('light');
+      const mb = document.getElementById('modal-theme-btn');
       if (isLight) {
         root.className = 'dark';
         localStorage.setItem('fins_theme', 'dark');
-        const tb = document.getElementById('theme-btn-ayarlar'); if (tb) tb.textContent = '🌙';
+        if (mb) mb.textContent = 'Koyu Tema: Aktif';
       } else {
         root.className = 'light';
         localStorage.setItem('fins_theme', 'light');
-        const tb = document.getElementById('theme-btn-ayarlar'); if (tb) tb.textContent = '☀️';
+        if (mb) mb.textContent = 'Açık Tema: Aktif';
       }
       if (currentPage === 'home') drawBarChart();
+    }
+    function changeCurrency(val) {
+      currentCurrency = val;
+      localStorage.setItem('fins_currency', val);
+      updateCurrencyLabels();
+      renderWallets();
+      if (currentPage === 'home') { renderStats(); renderHome(); drawBarChart(); }
+      if (currentPage === 'islemler') renderTransactions();
+      if (currentPage === 'limiter') renderLimiter();
+      if (currentPage === 'grafik') renderGrafik();
+      toast('Para birimi güncellendi', 's');
+    }
+    function updateCurrencyLabels() {
+      document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = currentCurrency);
     }
 
     // ═══════════════ ADD ═══════════════
@@ -1654,7 +1672,7 @@
         const nowYm = new Date().getFullYear() + '-' + String(new Date().getMonth() + 1).padStart(2, '0');
         if (currYm === nowYm) {
           const spent = transactions.filter(t => t.tur === 'gider' && t.kategori === kategori && t.tarih?.startsWith(currYm)).reduce((s, t) => s + t.miktar, 0);
-          if (spent >= lim) setTimeout(() => toast(`\u26a0\ufe0f ${CAT_EMOJI[kategori] || ''} ${kategori} limiti a\u015f\u0131ld\u0131! (\u20ba${fmt(lim)})`, 'e'), 350);
+          if (spent >= lim) setTimeout(() => toast(`\u26a0\ufe0f ${CAT_EMOJI[kategori] || ''} ${kategori} limiti a\u015f\u0131ld\u0131! (${currentCurrency}${fmt(lim)})`, 'e'), 350);
           else if (spent > lim * 0.75) setTimeout(() => toast(`\u26a0\ufe0f ${kategori}: %${Math.round(spent / lim * 100)} kullan\u0131ld\u0131`, 'i'), 350);
         }
       }
@@ -1910,8 +1928,8 @@
       if (Notification.permission === 'denied') { toast('Bildirimler engellendi. Tarayıcı ayarlarından açabilirsiniz.', 'e'); return; }
       const result = await Notification.requestPermission();
       if (result === 'granted') {
-        const btn = document.getElementById('notif-btn');
-        if (btn) { btn.style.opacity = '1'; btn.dataset.granted = '1'; }
+        const btn = document.getElementById('modal-notif-btn');
+        if (btn) { btn.textContent = 'İzin Verildi'; btn.disabled = true; btn.style.opacity = '0.5'; }
         toast('Bildirimler açıldı! Sizi hatırlatacağız 🔔', 's');
         checkReminder();
       } else {
@@ -1921,8 +1939,8 @@
     // Register SW
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js').then(() => {
-        const btn = document.getElementById('notif-btn');
-        if (Notification.permission === 'granted' && btn) { btn.style.opacity = '1'; btn.dataset.granted = '1'; }
+        const btn = document.getElementById('modal-notif-btn');
+        if (Notification.permission === 'granted' && btn) { btn.textContent = 'İzin Verildi'; btn.disabled = true; btn.style.opacity = '0.5'; }
         setTimeout(checkReminder, 2000);
       }).catch(() => { });
     }

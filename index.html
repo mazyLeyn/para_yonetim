@@ -1639,9 +1639,10 @@
     }
     function checkReminder() {
       if (!('Notification' in window) || Notification.permission !== 'granted') return;
-      const today = new Date().toDateString();
-      if (localStorage.getItem('fins_notif_day') === today) return; // once per day
-      localStorage.setItem('fins_notif_day', today);
+      // TEST: günlük kısıtlama yok — her açılışta kontrol et
+      // const today = new Date().toDateString();
+      // if (localStorage.getItem('fins_notif_day') === today) return;
+      // localStorage.setItem('fins_notif_day', today);
       const lastTxDate = getLastTxDate();
       navigator.serviceWorker?.ready.then(reg => {
         reg.active?.postMessage({ type: 'FINS_CHECK_REMINDER', lastTxDate });

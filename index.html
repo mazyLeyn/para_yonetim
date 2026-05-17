@@ -1718,10 +1718,10 @@
       const gider = tx.filter(t => t.tur === 'gider').reduce((s, t) => s + t.miktar, 0);
       const bakiye = gelir - gider;
       const sb = document.getElementById('stat-bakiye');
-      sb.textContent = (bakiye < 0 ? '−' : '') + '₺' + fmt(Math.abs(bakiye));
+      sb.textContent = (bakiye < 0 ? '−' : '') + currentCurrency + fmt(Math.abs(bakiye));
       sb.className = 'text-3xl font-bold tracking-tight ' + (bakiye < 0 ? 'neg' : 'text-white');
-      document.getElementById('stat-gelir').textContent = '+₺' + fmt(gelir);
-      document.getElementById('stat-gider').textContent = '−₺' + fmt(gider);
+      document.getElementById('stat-gelir').textContent = '+' + currentCurrency + fmt(gelir);
+      document.getElementById('stat-gider').textContent = '−' + currentCurrency + fmt(gider);
     }
 
     // ═══════════════ HOME ═══════════════
@@ -1732,8 +1732,8 @@
       const tm = baseTx.filter(t => t.tarih && t.tarih.startsWith(ym));
       const mg = tm.filter(t => t.tur === 'gelir').reduce((s, t) => s + t.miktar, 0);
       const me = tm.filter(t => t.tur === 'gider').reduce((s, t) => s + t.miktar, 0);
-      document.getElementById('month-gelir').textContent = '+₺' + fmt(mg);
-      document.getElementById('month-gider').textContent = '−₺' + fmt(me);
+      document.getElementById('month-gelir').textContent = '+' + currentCurrency + fmt(mg);
+      document.getElementById('month-gider').textContent = '−' + currentCurrency + fmt(me);
       const ratio = mg > 0 ? Math.min(100, (me / mg) * 100) : (me > 0 ? 100 : 0);
       const prog = document.getElementById('month-progress');
       prog.style.width = ratio + '%';
@@ -1750,7 +1750,7 @@
         ce.classList.add('hidden');
         bd.innerHTML = sorted.slice(0, 6).map(([cat, amt]) => {
           const pct = totalG > 0 ? (amt / totalG) * 100 : 0;
-          return `<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-family:'DM Mono',monospace;font-size:.7rem;color:#94a3b8">${CAT_EMOJI[cat] || '📦'} ${cat}</span><span style="font-family:'DM Mono',monospace;font-size:.7rem;color:#64748b">₺${fmt(amt)} · %${pct.toFixed(0)}</span></div><div class="progress-bg"><div class="progress-fill" style="width:${pct}%;background:${CAT_COLORS[cat] || '#64748b'}"></div></div></div>`;
+          return `<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-family:'DM Mono',monospace;font-size:.7rem;color:#94a3b8">${CAT_EMOJI[cat] || '📦'} ${cat}</span><span style="font-family:'DM Mono',monospace;font-size:.7rem;color:#64748b">${currentCurrency}${fmt(amt)} · %${pct.toFixed(0)}</span></div><div class="progress-bg"><div class="progress-fill" style="width:${pct}%;background:${CAT_COLORS[cat] || '#64748b'}"></div></div></div>`;
         }).join('');
       }
       // Son 5

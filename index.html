@@ -899,10 +899,11 @@
               </h1>
             </div>
           </div>
-          <div class="flex items-center gap-1">
+          <div class="flex items-center gap-2">
             <p class="text-xs font-mono text-slate-600 mr-2" id="current-date"></p>
-            <button id="theme-btn" onclick="toggleTheme()" title="Tema Değiştir" style="background:none;border:none;cursor:pointer;font-size:1.15rem;opacity:.7;transition:opacity .2s;padding:4px" onmouseenter="this.style.opacity=1" onmouseleave="this.style.opacity='.7'">🌙</button>
-            <button id="notif-btn" onclick="requestNotifPermission()" title="Bildirim izni" style="background:none;border:none;cursor:pointer;font-size:1.15rem;opacity:.4;transition:opacity .2s;padding:4px" onmouseenter="this.style.opacity=1" onmouseleave="this.style.opacity=document.getElementById('notif-btn').dataset.granted==='1'?'1':'.4'">🔔</button>
+            <button onclick="openSettings()" title="Ayarlar" class="text-slate-500 hover:text-slate-300 transition-colors" style="background:none;border:none;cursor:pointer;padding:4px">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
           </div>
         </div>
 
@@ -1000,7 +1001,7 @@
               <div id="wallet-picker" class="flex gap-2 flex-wrap"></div>
             </div>
             <div>
-              <label class="block text-xs font-mono text-slate-500 tracking-wider mb-1.5">MİKTAR (₺)</label>
+              <label id="lbl-miktar" class="block text-xs font-mono text-slate-500 tracking-wider mb-1.5">MİKTAR (₺)</label>
               <input id="f-miktar" type="number" min="0" step="0.01" placeholder="0.00"
                 class="w-full rounded-xl px-4 py-3 text-xl font-bold font-mono" />
             </div>
@@ -1125,6 +1126,38 @@
 
     </div><!-- /pages -->
 
+    <!-- AYARLAR MODAL -->
+    <div id="settings-modal" class="modal-bg" style="display:none">
+      <div class="modal-content glass" style="max-width:340px">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-lg font-bold text-white" style="font-family:'Syne',sans-serif">Ayarlar</h3>
+          <button onclick="closeSettings()" class="text-slate-400 hover:text-white text-2xl font-bold transition-colors">&times;</button>
+        </div>
+        <div class="space-y-4">
+          <div class="flex justify-between items-center">
+            <span class="text-sm font-semibold text-slate-300">Tema Modu</span>
+            <button onclick="toggleTheme()" class="fbtn flex items-center gap-2"><span id="theme-btn-modal">🌙</span> Değiştir</button>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-sm font-semibold text-slate-300">Bildirimler</span>
+            <button id="notif-btn" onclick="requestNotifPermission()" class="fbtn">Aktifleştir</button>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-sm font-semibold text-slate-300">Para Birimi</span>
+            <select id="currency-select" onchange="changeCurrency(this.value)" class="rounded-xl px-3 py-1.5 text-sm">
+              <option value="₺">₺ (TRY)</option>
+              <option value="$">$ (USD)</option>
+              <option value="€">€ (EUR)</option>
+              <option value="£">£ (GBP)</option>
+            </select>
+          </div>
+        </div>
+        <div class="mt-8 text-center border-t border-blue-500/10 pt-4">
+          <p class="text-xs font-mono text-slate-500">Fins v2.1.0</p>
+        </div>
+      </div>
+    </div>
+
     <!-- CÜZDAN MODAL -->
     <div id="wallet-modal" class="modal-bg" onclick="if(event.target===this)closeWalletModal()">
       <div class="modal-sheet">
@@ -1229,7 +1262,7 @@
         h += `<div class="wallet-card${activeWalletId === w.id ? ' wsel' : ''}" style="--wc:${w.color}" onclick="setActiveWallet('${w.id}')">
       <button class="wc-del" onclick="event.stopPropagation();deleteWallet('${w.id}')">✕</button>
       <span class="wc-icon">${w.icon}</span><div class="wc-name">${esc(w.name).toUpperCase()}</div>
-      <div class="wc-bal" style="color:${b < 0 ? '#f43f5e' : w.color}">${b < 0 ? '\u2212' : ''}\u20ba${fmtShort(Math.abs(b))}</div>
+      <div class="wc-bal" style="color:${b < 0 ? '#f43f5e' : w.color}">${b < 0 ? '\u2212' : ''}${CURRENCY}${fmtShort(Math.abs(b))}</div>
       <div class="wc-sub">${cnt} i\u015flem</div></div>`;
       });
       h += `<button class="wallet-add-btn" onclick="openWalletModal()"><span style="font-size:1.4rem;line-height:1">＋</span><span>Ekle</span></button>`;
@@ -1300,13 +1333,13 @@
             ${isOver ? '<span class="lc-badge">\u26a0\ufe0f A\u015f\u0131ld\u0131</span>' : ''}
           </div>
           <div class="lc-amts">
-            <span class="lc-spent" style="color:${spentColor}">\u20ba${fmt(spent)}</span>
-            <span class="lc-lim">${lim > 0 ? '/ \u20ba' + fmt(lim) : 'limit yok'}</span>
+            <span class="lc-spent" style="color:${spentColor}">${CURRENCY}${fmt(spent)}</span>
+            <span class="lc-lim">${lim > 0 ? '/ ' + CURRENCY + fmt(lim) : 'limit yok'}</span>
           </div>
           ${lim > 0 ? `<div class="progress-bg" style="margin:0 0 3px"><div class="progress-fill" style="width:${pct}%;background:${barColor}"></div></div>
-          <p class="lc-remain" style="color:${isOver ? '#f43f5e' : '#4a5568'}">${isOver ? 'Limit \u20ba' + fmt(Math.abs(remaining)) + ' a\u015f\u0131ld\u0131' : 'Kalan: \u20ba' + fmt(remaining)}</p>` : '<div style="height:6px"></div>'}
+          <p class="lc-remain" style="color:${isOver ? '#f43f5e' : '#4a5568'}">${isOver ? 'Limit ' + CURRENCY + fmt(Math.abs(remaining)) + ' a\u015f\u0131ld\u0131' : 'Kalan: ' + CURRENCY + fmt(remaining)}</p>` : '<div style="height:6px"></div>'}
           <div class="lc-row">
-            <input type="number" min="0" step="1" placeholder="Limit (\u20ba)" value="${lim > 0 ? lim : ''}" class="lc-inp" onchange="setLimit('${cat}',this.value)"/>
+            <input type="number" min="0" step="1" placeholder="Limit (${CURRENCY})" value="${lim > 0 ? lim : ''}" class="lc-inp" onchange="setLimit('${cat}',this.value)"/>
             ${lim > 0 ? `<button class="lc-rm" onclick="removeLimit('${cat}')" title="Limiti kald\u0131r">\u2715</button>` : ''}
           </div>
         </div>`;
@@ -1317,7 +1350,7 @@
       if (!val || isNaN(v) || v <= 0) { delete limits[cat]; } else { limits[cat] = Math.round(v * 100) / 100; }
       saveLimits();
       renderLimiter();
-      if (limits[cat]) toast(`${CAT_EMOJI[cat] || ''} ${cat} limiti \u20ba${fmt(limits[cat])} olarak ayarland\u0131`, 's');
+      if (limits[cat]) toast(`${CAT_EMOJI[cat] || ''} ${cat} limiti ${CURRENCY}${fmt(limits[cat])} olarak ayarland\u0131`, 's');
     }
     function removeLimit(cat) {
       delete limits[cat]; saveLimits(); renderLimiter();
@@ -1376,6 +1409,7 @@
       if (tb) tb.textContent = document.getElementById('html-root').classList.contains('light') ? '☀️' : '🌙';
 
       setType('gelir');
+      document.getElementById('lbl-miktar').textContent = `MİKTAR (${CURRENCY})`;
       renderWallets();
       renderWalletPicker();
       renderLimiter();
@@ -1409,18 +1443,33 @@
       document.getElementById('btn-gider').style.cssText = type === 'gider' ? 'background:rgba(244,63,94,.18);border-color:rgba(244,63,94,.45);color:#f43f5e;' : 'background:transparent;border-color:rgba(255,255,255,.06);color:#4a5568;';
     }
 
-    // ═══════════════ THEME ═══════════════
+    // ═══════════════ SETTINGS & THEME ═══════════════
+    let CURRENCY = localStorage.getItem('fins_currency') || '₺';
+
+    function openSettings() {
+      document.getElementById('settings-modal').style.display = 'flex';
+      document.getElementById('currency-select').value = CURRENCY;
+    }
+    function closeSettings() { document.getElementById('settings-modal').style.display = 'none'; }
+    function changeCurrency(val) {
+      CURRENCY = val;
+      localStorage.setItem('fins_currency', val);
+      document.getElementById('lbl-miktar').textContent = `MİKTAR (${val})`;
+      renderStats(); renderHome(); renderTransactions(); renderGrafik(); renderLimiter();
+      toast('Para birimi güncellendi ✓', 's');
+    }
+
     function toggleTheme() {
       const root = document.getElementById('html-root');
       const isLight = root.classList.contains('light');
       if (isLight) {
         root.className = 'dark';
         localStorage.setItem('fins_theme', 'dark');
-        document.getElementById('theme-btn').textContent = '🌙';
+        const tb = document.getElementById('theme-btn-modal'); if(tb) tb.textContent = '🌙';
       } else {
         root.className = 'light';
         localStorage.setItem('fins_theme', 'light');
-        document.getElementById('theme-btn').textContent = '☀️';
+        const tb = document.getElementById('theme-btn-modal'); if(tb) tb.textContent = '☀️';
       }
       if (currentPage === 'home') drawBarChart();
     }
@@ -1444,7 +1493,7 @@
         const nowYm = new Date().getFullYear() + '-' + String(new Date().getMonth() + 1).padStart(2, '0');
         if (currYm === nowYm) {
           const spent = transactions.filter(t => t.tur === 'gider' && t.kategori === kategori && t.tarih?.startsWith(currYm)).reduce((s, t) => s + t.miktar, 0);
-          if (spent >= lim) setTimeout(() => toast(`\u26a0\ufe0f ${CAT_EMOJI[kategori] || ''} ${kategori} limiti a\u015f\u0131ld\u0131! (\u20ba${fmt(lim)})`, 'e'), 350);
+          if (spent >= lim) setTimeout(() => toast(`\u26a0\ufe0f ${CAT_EMOJI[kategori] || ''} ${kategori} limiti a\u015f\u0131ld\u0131! (${CURRENCY}${fmt(lim)})`, 'e'), 350);
           else if (spent > lim * 0.75) setTimeout(() => toast(`\u26a0\ufe0f ${kategori}: %${Math.round(spent / lim * 100)} kullan\u0131ld\u0131`, 'i'), 350);
         }
       }
@@ -1490,10 +1539,10 @@
       const gider = tx.filter(t => t.tur === 'gider').reduce((s, t) => s + t.miktar, 0);
       const bakiye = gelir - gider;
       const sb = document.getElementById('stat-bakiye');
-      sb.textContent = (bakiye < 0 ? '−' : '') + '₺' + fmt(Math.abs(bakiye));
+      sb.textContent = (bakiye < 0 ? '−' : '') + CURRENCY + fmt(Math.abs(bakiye));
       sb.className = 'text-3xl font-bold tracking-tight ' + (bakiye < 0 ? 'neg' : 'text-white');
-      document.getElementById('stat-gelir').textContent = '+₺' + fmt(gelir);
-      document.getElementById('stat-gider').textContent = '−₺' + fmt(gider);
+      document.getElementById('stat-gelir').textContent = '+' + CURRENCY + fmt(gelir);
+      document.getElementById('stat-gider').textContent = '−' + CURRENCY + fmt(gider);
     }
 
     // ═══════════════ HOME ═══════════════
@@ -1504,8 +1553,8 @@
       const tm = baseTx.filter(t => t.tarih && t.tarih.startsWith(ym));
       const mg = tm.filter(t => t.tur === 'gelir').reduce((s, t) => s + t.miktar, 0);
       const me = tm.filter(t => t.tur === 'gider').reduce((s, t) => s + t.miktar, 0);
-      document.getElementById('month-gelir').textContent = '+₺' + fmt(mg);
-      document.getElementById('month-gider').textContent = '−₺' + fmt(me);
+      document.getElementById('month-gelir').textContent = '+' + CURRENCY + fmt(mg);
+      document.getElementById('month-gider').textContent = '−' + CURRENCY + fmt(me);
       const ratio = mg > 0 ? Math.min(100, (me / mg) * 100) : (me > 0 ? 100 : 0);
       const prog = document.getElementById('month-progress');
       prog.style.width = ratio + '%';
@@ -1522,7 +1571,7 @@
         ce.classList.add('hidden');
         bd.innerHTML = sorted.slice(0, 6).map(([cat, amt]) => {
           const pct = totalG > 0 ? (amt / totalG) * 100 : 0;
-          return `<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-family:'DM Mono',monospace;font-size:.7rem;color:#94a3b8">${CAT_EMOJI[cat] || '📦'} ${cat}</span><span style="font-family:'DM Mono',monospace;font-size:.7rem;color:#64748b">₺${fmt(amt)} · %${pct.toFixed(0)}</span></div><div class="progress-bg"><div class="progress-fill" style="width:${pct}%;background:${CAT_COLORS[cat] || '#64748b'}"></div></div></div>`;
+          return `<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-family:'DM Mono',monospace;font-size:.7rem;color:#94a3b8">${CAT_EMOJI[cat] || '📦'} ${cat}</span><span style="font-family:'DM Mono',monospace;font-size:.7rem;color:#64748b">${CURRENCY}${fmt(amt)} · %${pct.toFixed(0)}</span></div><div class="progress-bg"><div class="progress-fill" style="width:${pct}%;background:${CAT_COLORS[cat] || '#64748b'}"></div></div></div>`;
         }).join('');
       }
       // Son 5
@@ -1549,7 +1598,7 @@
       const del = showDel ? `<button onclick="deleteTransaction('${t.id}')" class="btn-danger" style="padding:4px 10px;border-radius:8px;font-size:.72rem;font-weight:700;flex-shrink:0">Sil</button>` : '';
       const w = wallets.find(x => x.id === t.walletId);
       const walletBadge = w ? `<span style="color:${w.color};opacity:.85;display:inline-flex;align-items:center;gap:2px">${w.icon} ${esc(w.name)}</span>` : '';
-      return `<div class="tx-row"><div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span style="font-size:.85rem;font-weight:600;color:#e2e8f0">${CAT_EMOJI[t.kategori] || '📦'} ${t.kategori}</span><span class="tag ${tc}">${t.tur}</span></div><div style="display:flex;gap:8px;font-family:'DM Mono',monospace;font-size:.7rem;color:#4a5568;margin-top:2px;align-items:center"><span>${fmtDate(t.tarih)}</span>${walletBadge}${t.aciklama ? `<span style="color:#374151;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(t.aciklama)}</span>` : ''}</div></div><div class="${ac}" style="font-family:'DM Mono',monospace;font-weight:700;font-size:.95rem;flex-shrink:0">${sign}₺${fmt(t.miktar)}</div>${del}</div>`;
+      return `<div class="tx-row"><div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span style="font-size:.85rem;font-weight:600;color:#e2e8f0">${CAT_EMOJI[t.kategori] || '📦'} ${t.kategori}</span><span class="tag ${tc}">${t.tur}</span></div><div style="display:flex;gap:8px;font-family:'DM Mono',monospace;font-size:.7rem;color:#4a5568;margin-top:2px;align-items:center"><span>${fmtDate(t.tarih)}</span>${walletBadge}${t.aciklama ? `<span style="color:#374151;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(t.aciklama)}</span>` : ''}</div></div><div class="${ac}" style="font-family:'DM Mono',monospace;font-weight:700;font-size:.95rem;flex-shrink:0">${sign}${CURRENCY}${fmt(t.miktar)}</div>${del}</div>`;
     }
 
     // ═══════════════ BAR CHART ═══════════════
@@ -1584,7 +1633,7 @@
         ctx.fillStyle = isLight ? '#475569' : '#4b5563'; ctx.font = '9px DM Mono,monospace'; ctx.textAlign = 'center'; ctx.fillText(m.label, cx, H - 8);
       });
       const tip = document.getElementById('chart-tooltip');
-      canvas.onmousemove = function (e) { const rect = canvas.getBoundingClientRect(), mx = e.clientX - rect.left, my = e.clientY - rect.top; let found = null; for (const b of bars) { if (b.h > 0 && mx >= b.x && mx <= b.x + b.w && my >= b.y && my <= b.y + b.h) { found = b; break; } } if (found) { const c = found.type === 'gelir' ? '#10b981' : '#f43f5e', sign = found.type === 'gelir' ? '+' : '−'; tip.innerHTML = `<span style="color:${c}">${sign}₺${fmt(found.val)}</span><br><span style="color:#6b7280">${found.label} · ${found.type}</span>`; const wr = wrap.getBoundingClientRect(); let tx = e.clientX - wr.left + 14, ty = e.clientY - wr.top - 52; if (tx + 130 > wr.width) tx -= 150; if (ty < 0) ty = 4; tip.style.left = tx + 'px'; tip.style.top = ty + 'px'; tip.style.opacity = '1'; } else tip.style.opacity = '0'; };
+      canvas.onmousemove = function (e) { const rect = canvas.getBoundingClientRect(), mx = e.clientX - rect.left, my = e.clientY - rect.top; let found = null; for (const b of bars) { if (b.h > 0 && mx >= b.x && mx <= b.x + b.w && my >= b.y && my <= b.y + b.h) { found = b; break; } } if (found) { const c = found.type === 'gelir' ? '#10b981' : '#f43f5e', sign = found.type === 'gelir' ? '+' : '−'; tip.innerHTML = `<span style="color:${c}">${sign}${CURRENCY}${fmt(found.val)}</span><br><span style="color:#6b7280">${found.label} · ${found.type}</span>`; const wr = wrap.getBoundingClientRect(); let tx = e.clientX - wr.left + 14, ty = e.clientY - wr.top - 52; if (tx + 130 > wr.width) tx -= 150; if (ty < 0) ty = 4; tip.style.left = tx + 'px'; tip.style.top = ty + 'px'; tip.style.opacity = '1'; } else tip.style.opacity = '0'; };
       canvas.onmouseleave = () => tip.style.opacity = '0';
     }
 
@@ -1608,7 +1657,7 @@
         const gider = mTx.filter(t => t.tur === 'gider').reduce((s, t) => s + t.miktar, 0);
         const cMap = {}; mTx.filter(t => t.tur === 'gider').forEach(t => { cMap[t.kategori] = (cMap[t.kategori] || 0) + t.miktar; });
         const catData = Object.entries(cMap).sort((a, b) => b[1] - a[1]);
-        return `<div class="glass rounded-2xl p-5 card-hover"><div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px"><div><h3 style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:#e2e8f0">${TR_MONTHS[mIdx].toUpperCase()}</h3><p style="font-family:'DM Mono',monospace;font-size:.65rem;color:#4a5568;margin-top:2px">${selectedYear}</p></div><div style="text-align:right"><p style="font-family:'DM Mono',monospace;font-size:.72rem;color:${gelir >= gider ? '#10b981' : '#f43f5e'};font-weight:700">${gelir >= gider ? '+' : '−'}₺${fmt(Math.abs(gelir - gider))}</p><p style="font-family:'DM Mono',monospace;font-size:.6rem;color:#374151">${gelir >= gider ? 'net gelir' : 'net gider'}</p></div></div><div style="display:flex;gap:16px;align-items:center;justify-content:center;flex-wrap:wrap"><div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div class="donut-wrap" style="width:100px;height:100px"><canvas id="d1-${mIdx}" width="100" height="100"></canvas><div class="donut-center"><div class="d-val" style="color:#e2e8f0;font-size:.75rem">₺${fmtShort(gelir + gider)}</div><div class="d-lbl">toplam</div></div></div><div style="display:flex;gap:10px;font-family:'DM Mono',monospace;font-size:.65rem"><span style="color:#10b981">+₺${fmtShort(gelir)}</span><span style="color:#f43f5e">−₺${fmtShort(gider)}</span></div></div><div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;min-width:110px"><div class="donut-wrap" style="width:100px;height:100px"><canvas id="d2-${mIdx}" width="100" height="100"></canvas><div class="donut-center"><div class="d-val" style="color:#f43f5e;font-size:.75rem">₺${fmtShort(gider)}</div><div class="d-lbl">gider</div></div></div>${catData.length ? `<div class="d-legend" style="justify-content:center;max-width:130px">${catData.slice(0, 4).map(([c]) => `<div class="d-legend-item"><div class="d-legend-dot" style="background:${CAT_COLORS[c] || '#64748b'}"></div>${c}</div>`).join('')}</div>` : '<p style="font-family:\'DM Mono\',monospace;font-size:.65rem;color:#374151">gider yok</p>'}</div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;border-top:1px solid rgba(59,130,246,.08);padding-top:12px"><div style="text-align:center"><p style="font-family:'DM Mono',monospace;font-size:.6rem;color:#4a5568;margin-bottom:2px">İŞLEM</p><p style="font-family:'DM Mono',monospace;font-size:.82rem;font-weight:600;color:#94a3b8">${mTx.length}</p></div><div style="text-align:center"><p style="font-family:'DM Mono',monospace;font-size:.6rem;color:#4a5568;margin-bottom:2px">KATEGORİ</p><p style="font-family:'DM Mono',monospace;font-size:.82rem;font-weight:600;color:#94a3b8">${catData.length}</p></div></div></div>`;
+        return `<div class="glass rounded-2xl p-5 card-hover"><div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px"><div><h3 style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:#e2e8f0">${TR_MONTHS[mIdx].toUpperCase()}</h3><p style="font-family:'DM Mono',monospace;font-size:.65rem;color:#4a5568;margin-top:2px">${selectedYear}</p></div><div style="text-align:right"><p style="font-family:'DM Mono',monospace;font-size:.72rem;color:${gelir >= gider ? '#10b981' : '#f43f5e'};font-weight:700">${gelir >= gider ? '+' : '−'}${CURRENCY}${fmt(Math.abs(gelir - gider))}</p><p style="font-family:'DM Mono',monospace;font-size:.6rem;color:#374151">${gelir >= gider ? 'net gelir' : 'net gider'}</p></div></div><div style="display:flex;gap:16px;align-items:center;justify-content:center;flex-wrap:wrap"><div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div class="donut-wrap" style="width:100px;height:100px"><canvas id="d1-${mIdx}" width="100" height="100"></canvas><div class="donut-center"><div class="d-val" style="color:#e2e8f0;font-size:.75rem">${CURRENCY}${fmtShort(gelir + gider)}</div><div class="d-lbl">toplam</div></div></div><div style="display:flex;gap:10px;font-family:'DM Mono',monospace;font-size:.65rem"><span style="color:#10b981">+${CURRENCY}${fmtShort(gelir)}</span><span style="color:#f43f5e">−${CURRENCY}${fmtShort(gider)}</span></div></div><div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;min-width:110px"><div class="donut-wrap" style="width:100px;height:100px"><canvas id="d2-${mIdx}" width="100" height="100"></canvas><div class="donut-center"><div class="d-val" style="color:#f43f5e;font-size:.75rem">${CURRENCY}${fmtShort(gider)}</div><div class="d-lbl">gider</div></div></div>${catData.length ? `<div class="d-legend" style="justify-content:center;max-width:130px">${catData.slice(0, 4).map(([c]) => `<div class="d-legend-item"><div class="d-legend-dot" style="background:${CAT_COLORS[c] || '#64748b'}"></div>${c}</div>`).join('')}</div>` : '<p style="font-family:\'DM Mono\',monospace;font-size:.65rem;color:#374151">gider yok</p>'}</div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;border-top:1px solid rgba(59,130,246,.08);padding-top:12px"><div style="text-align:center"><p style="font-family:'DM Mono',monospace;font-size:.6rem;color:#4a5568;margin-bottom:2px">İŞLEM</p><p style="font-family:'DM Mono',monospace;font-size:.82rem;font-weight:600;color:#94a3b8">${mTx.length}</p></div><div style="text-align:center"><p style="font-family:'DM Mono',monospace;font-size:.6rem;color:#4a5568;margin-bottom:2px">KATEGORİ</p><p style="font-family:'DM Mono',monospace;font-size:.82rem;font-weight:600;color:#94a3b8">${catData.length}</p></div></div></div>`;
       }).join('');
       requestAnimationFrame(() => {
         monthsToShow.forEach(mIdx => {

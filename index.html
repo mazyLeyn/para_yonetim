@@ -1959,10 +1959,24 @@
     }
     // Register SW
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js').then(() => {
+      navigator.serviceWorker.register('./sw.js').then(reg => {
         const btn = document.getElementById('modal-notif-btn');
         if (Notification.permission === 'granted' && btn) { btn.textContent = 'İzin Verildi'; btn.disabled = true; btn.style.opacity = '0.5'; }
         setTimeout(checkReminder, 2000);
+
+        // Check if there is a new update available
+        reg.onupdatefound = () => {
+          const installingWorker = reg.installing;
+          installingWorker.onstatechange = () => {
+            if (installingWorker.state === 'installed') {
+              if (navigator.serviceWorker.controller) {
+                // New update loaded and ready, auto-reload to apply it!
+                toast('Yeni sürüm yüklendi, güncelleniyor... 🔄', 's');
+                setTimeout(() => window.location.reload(), 1000);
+              }
+            }
+          };
+        };
       }).catch(() => { });
     }
     let _searchTm;

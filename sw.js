@@ -35,20 +35,21 @@ self.addEventListener('message', e => {
   if (!lastTxDate) return;
 
   const now = new Date();
+  const hour = now.getHours();
 
-  // TEST: saat kısıtlaması yok (normal: hour < 20 || hour >= 22)
-  // if (hour < 20 || hour >= 22) return;
+  // Only notify between 20:00-22:00
+  if (hour < 20 || hour >= 22) return;
 
   const lastDate = new Date(lastTxDate + 'T00:00:00');
-  const minutesSince = (now - lastDate) / 60000; // TEST: dakika cinsinden
+  const daysSince = (now - lastDate) / 86400000;
 
-  if (minutesSince >= 1) { // TEST: 1 dakika (normal: daysSince >= 3)
+  if (daysSince >= 3) {
     self.registration.showNotification('Fins 💰', {
       body: 'Bugün hiç harcama yazmadın mı, yoksa yazmayı mı unuttun? 💰',
       icon: './logo.png',
       badge: './logo.png',
       tag: 'fins-reminder',
-      renotify: true, // TEST: true yap ki her seferinde görünsün
+      renotify: false,
       vibrate: [200, 100, 200],
       data: { url: './' }
     });

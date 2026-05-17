@@ -145,7 +145,10 @@ select option{background:#141b2d;color:#e2e8f0;}
 <div id="page-home" class="page active">
   <div class="flex items-end justify-between mb-8">
     <div class="flex items-center gap-3">
-      <img src="logo.png" alt="Fins" style="width:36px;height:36px;border-radius:10px;object-fit:cover;border:1px solid rgba(59,130,246,.2);" onerror="this.style.display='none'"/>
+      <div style="position:relative;width:36px;height:36px;flex-shrink:0">
+        <img src="logo.png" alt="Fins" class="logo-img" style="width:36px;height:36px;border-radius:10px;object-fit:cover;border:1px solid rgba(59,130,246,.2);display:block" onerror="this.style.display='none';this.parentElement.querySelector('.logo-svg').style.display='flex'"/>
+        <div class="logo-svg" style="display:none;width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#3b82f6,#2563eb);align-items:center;justify-content:center;font-size:1.1rem;border:1px solid rgba(59,130,246,.3)">💰</div>
+      </div>
       <div>
         <p class="text-xs font-mono tracking-widest text-blue-500 uppercase mb-0.5">Para Yönetimi</p>
         <h1 class="text-3xl font-bold tracking-tight text-white">Fins</h1>
@@ -915,7 +918,8 @@ document.addEventListener('keydown',e=>{
 window.addEventListener('resize',()=>{ if(currentPage==='home') drawBarChart(); });
 </script>
 </body>
-</html><!DOCTYPE html>
+</html>
+<!DOCTYPE html>
 <html lang="tr" class="dark">
 <head>
 <meta charset="UTF-8"/>
@@ -1043,8 +1047,8 @@ select option{background:#141b2d;color:#e2e8f0;}
 <!-- ── PWA INSTALL BANNER ── -->
 <div id="install-banner">
   <div class="ib-logo">
-    <img src="logo.png" alt="Fins" onerror="this.style.display='none';document.getElementById('ib-logo-fb').style.display='inline'"/>
-    <span id="ib-logo-fb" style="display:none;font-size:1.3rem">💰</span>
+    <img src="logo.png" alt="Fins" class="logo-img" onerror="this.style.display='none';this.parentElement.querySelector('.logo-svg').style.display='flex'"/>
+    <div class="logo-svg" style="display:none;width:42px;height:42px;align-items:center;justify-content:center;font-size:1.4rem">💰</div>
   </div>
   <div class="ib-text">
     <h4>Ana Ekrana Ekle</h4>
@@ -1062,7 +1066,10 @@ select option{background:#141b2d;color:#e2e8f0;}
 <div id="page-home" class="page active">
   <div class="flex items-end justify-between mb-8">
     <div class="flex items-center gap-3">
-      <img src="logo.png" alt="Fins" style="width:36px;height:36px;border-radius:10px;object-fit:cover;border:1px solid rgba(59,130,246,.2);" onerror="this.style.display='none'"/>
+      <div style="position:relative;width:36px;height:36px;flex-shrink:0">
+        <img src="logo.png" alt="Fins" class="logo-img" style="width:36px;height:36px;border-radius:10px;object-fit:cover;border:1px solid rgba(59,130,246,.2);display:block" onerror="this.style.display='none';this.parentElement.querySelector('.logo-svg').style.display='flex'"/>
+        <div class="logo-svg" style="display:none;width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#3b82f6,#2563eb);align-items:center;justify-content:center;font-size:1.1rem;border:1px solid rgba(59,130,246,.3)">💰</div>
+      </div>
       <div>
         <p class="text-xs font-mono tracking-widest text-blue-500 uppercase mb-0.5">Para Yönetimi</p>
         <h1 class="text-3xl font-bold tracking-tight text-white">Fins</h1>
@@ -1314,46 +1321,44 @@ function hideBanner(permanent) {
 document.addEventListener('DOMContentLoaded', () => {
   const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
 
-  // Update banner description for iOS
+  // iOS: update description & button
   if (isIOS) {
     const desc = document.getElementById('ib-desc');
-    if (desc) desc.innerHTML = 'Safari\'de <b style="color:#93c5fd">Paylaş → Ana Ekrana Ekle</b><br>adımlarını takip edin';
+    if (desc) desc.innerHTML = '<b style="color:#93c5fd">Paylaş</b> → <b style="color:#93c5fd">Ana Ekrana Ekle</b><br>adımını takip edin';
+    const btn = document.getElementById('install-yes');
+    if (btn) btn.textContent = 'Nasıl Yapılır?';
   }
 
   document.getElementById('install-yes').addEventListener('click', async () => {
     if (deferredPrompt) {
-      // Chrome Android native prompt
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      deferredPrompt = null;
-      if (outcome === 'accepted') {
-        hideBanner(true);
-        toast('Fins ana ekrana eklendi! 🎉','s');
-      } else {
+      // Chrome Android — doğrudan prompt tetikle, ekstra onay yok
+      try {
+        await deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        hideBanner(outcome === 'accepted');
+        if (outcome === 'accepted') toast('Fins ana ekrana eklendi! 🎉','s');
+      } catch(e) {
         hideBanner(false);
       }
     } else if (isIOS) {
-      // iOS instructions already shown in description
-      hideBanner(false);
-      toast('Safari\'de: Paylaş → Ana Ekrana Ekle 📲','i');
+      hideBanner(true);
+      toast('Safari\'de altta Paylaş → Ana Ekrana Ekle 📲','i');
     } else {
-      // Desktop or other: show guidance
-      hideBanner(false);
-      toast('Tarayıcı adres çubuğundaki ⊕ ikonuna tıklayın','i');
+      hideBanner(true);
+      toast('Tarayıcı menüsünden "Uygulamayı Yükle" seçin','i');
     }
   });
 
   document.getElementById('install-no').addEventListener('click', () => {
     hideBanner(false);
-    // Don't set permanent — ask again next session
   });
 
-  // Fix logo: if logo.png fails, show emoji
-  const logoImgs = document.querySelectorAll('img[data-logo]');
-  logoImgs.forEach(img => {
-    img.onerror = () => {
-      img.style.display = 'none';
-      const fb = img.nextElementSibling;
+  // SVG logo fallback — logo.png yoksa göster
+  document.querySelectorAll('.logo-img').forEach(img => {
+    img.onerror = function() {
+      this.style.display = 'none';
+      const fb = this.parentElement.querySelector('.logo-svg');
       if (fb) fb.style.display = 'flex';
     };
   });

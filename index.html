@@ -485,6 +485,7 @@
       background: rgba(13, 18, 32, .85);
       backdrop-filter: blur(10px);
       transition: all .25s;
+      position: relative;
     }
 
     .wallet-card.wsel {
@@ -525,6 +526,36 @@
       font-size: .58rem;
       color: #374151;
       margin-top: 2px;
+    }
+
+    .wc-del {
+      position: absolute;
+      top: 7px;
+      right: 7px;
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      color: #374151;
+      font-size: .9rem;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .2s;
+      opacity: 0;
+      padding: 0;
+    }
+
+    .wallet-card:hover .wc-del {
+      opacity: 1;
+    }
+
+    .wc-del:hover {
+      background: rgba(244, 63, 94, .2);
+      color: #f43f5e;
     }
 
     .wallet-add-btn {
@@ -1130,9 +1161,10 @@
       wallets.forEach(w => {
         const { bakiye: b } = walletBal(w.id); const cnt = walletTx(w.id).length;
         h += `<div class="wallet-card${activeWalletId === w.id ? ' wsel' : ''}" style="--wc:${w.color}" onclick="setActiveWallet('${w.id}')">
+      <button class="wc-del" onclick="event.stopPropagation();deleteWallet('${w.id}')">✕</button>
       <span class="wc-icon">${w.icon}</span><div class="wc-name">${esc(w.name).toUpperCase()}</div>
-      <div class="wc-bal" style="color:${b < 0 ? '#f43f5e' : w.color}">${b < 0 ? '−' : ''}\u20ba${fmtShort(Math.abs(b))}</div>
-      <div class="wc-sub">${cnt} işlem</div></div>`;
+      <div class="wc-bal" style="color:${b < 0 ? '#f43f5e' : w.color}">${b < 0 ? '\u2212' : ''}\u20ba${fmtShort(Math.abs(b))}</div>
+      <div class="wc-sub">${cnt} i\u015flem</div></div>`;
       });
       h += `<button class="wallet-add-btn" onclick="openWalletModal()"><span style="font-size:1.4rem;line-height:1">＋</span><span>Ekle</span></button>`;
       strip.innerHTML = h;
@@ -1161,6 +1193,21 @@
       wallets.push(w); saveWallets(); selectedWalletId = w.id;
       closeWalletModal(); renderWallets(); renderWalletPicker();
       toast(`${wmIcon} ${name} eklendi`, 's');
+    }
+    function deleteWallet(wid) {
+      const w = wallets.find(x => x.id === wid);
+      if (!w) return;
+      if (!confirm(`"${w.name}" c\u00fczdan\u0131n\u0131 kald\u0131rmak istedi\u011finize emin misiniz?`)) return;
+      wallets = wallets.filter(x => x.id !== wid);
+      saveWallets();
+      if (activeWalletId === wid) activeWalletId = 'all';
+      if (selectedWalletId === wid) selectedWalletId = wallets[0]?.id || '';
+      renderWallets();
+      renderWalletPicker();
+      renderStats();
+      renderHome();
+      drawBarChart();
+      toast(`${w.icon} ${w.name} kald\u0131r\u0131ld\u0131`, 'i');
     }
 
     const CAT_COLORS = { 'Gıda': '#f59e0b', 'Fatura': '#3b82f6', 'Maaş': '#10b981', 'Eğlence': '#8b5cf6', 'Ulaşım': '#06b6d4', 'Sağlık': '#ec4899', 'Alışveriş': '#f97316', 'Kira': '#6366f1', 'Eğitim': '#14b8a6', 'Diğer': '#94a3b8' };
